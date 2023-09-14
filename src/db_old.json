@@ -1,0 +1,104 @@
+{
+    "participants": {
+        "1": {
+            "firstname": "John",
+            "lastname": "Doe",
+            "class": "7midi",
+            "group": "7midi-1",
+            "present": false
+            },
+        "2": {
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "class": "7midi",
+            "group": "7midi-2",
+            "present": false
+            }
+    },
+    "classes": {
+        "1": {
+            "name": "7midi",
+            "room": "123",
+            "teacher": "Bob"
+        }
+    },
+    "groups": {
+        "1": {
+            "name": "7midi-1",
+            "fairness_score": 0,
+            "station_scores": [0, 0, 0, 0, 0, 0],
+            "stations": [
+                "chemie-2",
+                "mathematik-1",
+                "physik-2",
+                "allgemein-1",
+                "allgemein-2",
+                "biologie-1",
+                "informatik-1",
+                "physik-1"
+              ]
+        }
+    },
+    "stations": {
+      "1": {
+        "name": "physik-1",
+        "subject": "Physik I - Raketenbau",
+        "room": "Schulhof"
+      },
+      "physik-2": {
+        "subject": "Physik II",
+        "name": "Rund um das Fliegen",
+        "room": "PH-H2"
+      },
+      "mathematik-1": {
+        "subject": "Mathematik I",
+        "name": "Mathematische Knobeleien I",
+        "room": "Obere Brücke"
+      },
+      "mathematik-2": {
+        "subject": "Mathematik II",
+        "name": "Mathematische Knobeleien II",
+        "room": "222"
+      },
+      "informatik-1": {
+        "subject": "Informatik I",
+        "name": "Geheime Botschaften",
+        "room": "IN-3"
+      },
+      "geografie-1": {
+        "subject": "Geografie I",
+        "name": "Atlasralley",
+        "room": "102"
+      },
+      "chemie-1": {
+        "subject": "Chemie I",
+        "name": "Schaumschläger",
+        "room": "CH-Ü1"
+      },
+      "chemie-2": {
+        "subject": "Chemie II",
+        "name": "Wer macht den leichtesten Teig?",
+        "room": "CH-Ü2"
+      },
+      "biologie-1": {
+        "subject": "Biologie I",
+        "name": "1, 2 oder 3?",
+        "room": "BI-Ü2"
+      },
+      "biologie-2": {
+        "subject": "Biologie II",
+        "name": "Rätselblitz im Tierreich",
+        "room": "BI-Ü1"
+      },
+      "allgemein-1": {
+        "subject": "Allgemein I",
+        "name": "Abendessen",
+        "room": "Mensa"
+      },
+      "allgemein-2": {
+        "subject": "Allgemein II",
+        "name": "Schauexperiment",
+        "room": "Schulhof"
+      }
+    }
+  }
