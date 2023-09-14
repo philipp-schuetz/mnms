@@ -1,0 +1,98 @@
+{
+  "participants": {
+    "4VW46923o74cb7xv5H6M": {
+      "firstname": "John",
+      "lastname": "Doe",
+      "class": "midi",
+      "group": "midi-1",
+      "present": false
+    },
+    "n89yE5Dpk5634d9Gc5G9": {
+      "firstname": "Jane",
+      "lastname": "Doe",
+      "class": "midi",
+      "group": "midi-2",
+      "present": false
+    }
+  },
+  "classes": {
+    "midi": {
+      "members": 0,
+      "score": 0
+    }
+  },
+  "groups": {
+    "midi-1": {
+      "totalScore": 0,
+      "fairnessScore": 0,
+      "stationScores": [0, 0, 0, 0, 0, 0],
+      "stationPlan": [
+        "chemistry-2",
+        "math-1",
+        "physics-2",
+        "dinner",
+        "experiment",
+        "biology-1",
+        "cs",
+        "physics-1"
+      ]
+    }
+  },
+  "stations": {
+    "physics-1": {
+      "subject": "Physik",
+      "name": "Raketenbau",
+      "room": "Schulhof"
+    },
+    "physics-2": {
+      "subject": "Physik",
+      "name": "Rund um das Fliegen",
+      "room": "PH-H2"
+    },
+    "math-1": {
+      "subject": "Mathematik",
+      "name": "Mathematische Knobeleien I",
+      "room": "Obere Brücke"
+    },
+    "math-2": {
+      "subject": "Mathematik",
+      "name": "Mathematische Knobeleien II",
+      "room": "222"
+    },
+    "cs": {
+      "subject": "Informatik",
+      "name": "Geheime Botschaften",
+      "room": "IN-3"
+    },
+    "geography": {
+      "subject": "Geografie",
+      "name": "Atlasralley",
+      "room": "102"
+    },
+    "chemistry-1": {
+      "subject": "Chemie",
+      "name": "Schaumschläger",
+      "room": "CH-Ü1"
+    },
+    "chemistry-2": {
+      "subject": "Chemie",
+      "name": "Wer macht den leichtesten Teig?",
+      "room": "CH-Ü2"
+    },
+    "biology-1": {
+      "subject": "Biologie",
+      "name": "1, 2 oder 3?",
+      "room": "BI-Ü2"
+    },
+    "dinner": {
+      "subject": "Allgemein",
+      "name": "Abendessen",
+      "room": "Mensa"
+    },
+    "experiment": {
+      "subject": "Allgemein",
+      "name": "Schauexperiment",
+      "room": "Schulhof"
+    }
+  }
+}

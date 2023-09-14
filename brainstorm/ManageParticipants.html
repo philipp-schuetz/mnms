@@ -1,0 +1,30 @@
+  <div id="create-participant">
+    <h1>Teilnehmer anlegen</h1>
+    <span>Existierende Teilnehmer</span>
+    <table>
+      <tr>
+        <th>Vorname</th>
+        <th>Nachname</th>
+        <th>Klasse</th>
+      </tr>
+      <tr v-for="i in participants">
+        <td>{{ i.firstname }}</td>
+        <td>{{ i.lastname }}</td>
+        <td>{{ i.group }}</td>
+        <td><button @click="delParticipant(i.id)">Delete</button></td>
+      </tr>
+    </table>
+    <FormCreateParticipant
+      debug="false"
+      v-for="n in formCount"
+    />
+    <button
+      class="center-content"
+      @click="formCount++"
+    >
+      <!-- <font-awesome-icon icon="fa-solid fa-plus" /> -->
+      Neuer Teilnehmer
+    </button>
+    <button @click="createParticipants()">Fertig</button>
+    <button @click="getParticipants()">Refresh</button>
+  </div>
