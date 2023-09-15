@@ -25,6 +25,10 @@ Station_Q = Query()
 async def root():
     return
 
+@app.get("/classes/info")
+async def get_class_info(class_name: str):
+    return classes_t.get(Class_Q.name == class_name)
+
 @app.post("/classes/create")
 async def create_class(name: str, room: str, teacher: str):
     class_id = classes_t.insert({
@@ -35,26 +39,21 @@ async def create_class(name: str, room: str, teacher: str):
     print(classes_t.all())
     return {"ID": class_id}
 
-@app.get("/classes/info")
-async def get_class_info(class_name: str):
-    return classes_t.get(Class_Q.name == class_name)
-
-@app.post("/groups/create")
-async def create_group(name:str, stations:List[str]):
-    if len(stations) != 8:
-        return {"error": "stations should be a list with lenght 8"}
-    group_id = groups_t.insert({
-        'name': name,
-        'fairness_score': 0,
-        'station_scores': [0, 0, 0, 0, 0, 0],
-        'stations': stations
-    })
-    print(groups_t.all())
-    return {"ID": group_id}
-
 @app.get("/groups/{group}/participants")
 async def get_group_participants(group: str):
     return participants_t.search(Participant_Q.group == group)
+
+@app.get("/groups/{group}/stations")
+async def get_group_stations(group: str):
+    stations_res = groups_t.get(Group_Q.name == group)['stations']
+    output = {'stations': {}}
+    for station in stations_res:
+        station_info = stations_t.search(Station_Q.name == station)
+        output['stations'][station] = {
+            'name': station_info['name'],
+            'room': station_info['room']
+		}
+    return output
 
 @app.get("/groups/{group}/scores")
 async def get_group_scores(group: str):
@@ -79,17 +78,18 @@ async def set_group_scores(group: str, fairness: int,
                             station_six
                     ]}, Group_Q.name == group)
 
-@app.get("/groups/{group}/stations")
-async def get_group_stations(group: str):
-    stations_res = groups_t.get(Group_Q.name == group)['stations']
-    output = {'stations': {}}
-    for station in stations_res:
-        station_info = stations_t.search(Station_Q.name == station)
-        output['stations'][station] = {
-            'name': station_info['name'],
-            'room': station_info['room']
-		}
-    return output
+@app.post("/groups/create")
+async def create_group(name:str, stations:List[str]):
+    if len(stations) != 8:
+        return {"error": "stations should be a list with lenght 8"}
+    group_id = groups_t.insert({
+        'name': name,
+        'fairness_score': 0,
+        'station_scores': [0, 0, 0, 0, 0, 0],
+        'stations': stations
+    })
+    print(groups_t.all())
+    return {"ID": group_id}
 
 @app.post("/participants/create")
 async def create_participant(firstname: str, lastname: str,
@@ -105,6 +105,10 @@ async def create_participant(firstname: str, lastname: str,
     print(participants_t.all())
     return {"ID": participant_id}
 
+@app.get("/stations/get-all")
+async def get_all_stations():
+    return stations_t.all()
+
 @app.post("/stations/create")
 async def create_station(name: str, subject: str, room: str):
     station_id = stations_t.insert({
@@ -115,10 +119,6 @@ async def create_station(name: str, subject: str, room: str):
     print(stations_t.all())
     return {"ID": station_id}
 
-@app.get("/stations/get-all")
-async def get_all_stations():
-    return stations_t.all()
-
 @app.delete("participants/delete-all")
 async def delete_all_participants(code: int):
     if code == 3594:
@@ -127,4 +127,7 @@ async def delete_all_participants(code: int):
 @app.delete("/delete-all")
 async def delete_all_data(code: int):
     if code == 3594:
-        db.truncate()
+        participants_t.truncate()
+        classes_t.truncate()
+        groups_t.truncate()
+        stations_t.truncate()
