@@ -105,7 +105,19 @@ async def create_participant(firstname: str, lastname: str,
     print(participants.all())
     return {"ID": participant_id}
 
-# TODO create, read for stations
+@app.post("/stations/create")
+async def create_station(name: str, subject: str, room: str):
+    station_id = stations.insert({
+        'name': name,
+        'subject': subject,
+        'room': room
+    })
+    print(stations.all())
+    return {"ID": station_id}
+
+@app.get("/stations/get-all")
+async def get_all_stations():
+    return stations.all()
 
 # TODO delete for all the other stuff
 
