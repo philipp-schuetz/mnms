@@ -19,6 +19,7 @@ stations = db.table('stations')
 Participant_Q = Query()
 Class_Q = Query()
 Group_Q = Query()
+Station_Q = Query()
 
 @app.get("/")
 async def root():
@@ -78,10 +79,17 @@ async def set_group_scores(group: str, fairness: int,
                             station_six
                     ]}, Group_Q.name == group)
 
-@app.get("/groups/{group}/stations") #TODO output more info for all stations (subject, name, room)
+@app.get("/groups/{group}/stations")
 async def get_group_stations(group: str):
-    result = groups.search(Group_Q.name == group)
-    return {'stations': result['stations']}
+    stations_res = groups.get(Group_Q.name == group)['stations']
+    output = {'stations': {}}
+    for station in stations_res:
+        station_info = stations.search(Station_Q.name == station)
+        output['stations'][station] = {
+            'name': station_info['name'],
+            'room': station_info['room']
+		}
+    return output
 
 @app.post("/participants/create")
 async def create_participant(firstname: str, lastname: str,
@@ -97,7 +105,7 @@ async def create_participant(firstname: str, lastname: str,
     print(participants.all())
     return {"ID": participant_id}
 
-#TODO create, read for stations
+# TODO create, read for stations
 
 # TODO delete for all the other stuff
 
