@@ -45,38 +45,31 @@ async def get_group_participants(group: str):
 
 @app.get("/groups/{group}/stations")
 async def get_group_stations(group: str):
+    # get station plan for group
     stations_res = groups_t.get(Group_Q.name == group)['stations']
-    output = {'stations': {}}
+    output = {'stations': []}
     for station in stations_res:
-        station_info = stations_t.search(Station_Q.name == station)
-        output['stations'][station] = {
+        station_info = stations_t.get(Station_Q.name == station)
+        output['stations'].append({
             'name': station_info['name'],
+            'subject': station_info['subject'],
             'room': station_info['room']
-		}
+		})
     return output
 
 @app.get("/groups/{group}/scores")
 async def get_group_scores(group: str):
-    result = groups_t.search(Group_Q.name == group)
+    result = groups_t.get(Group_Q.name == group)
     return {
         "fairness_score": result["fairness_score"],
         "station_scores": result["station_scores"]
     }
 
 @app.put("/groups/{group}/scores")
-async def set_group_scores(group: str, fairness: int,
-                           station_one: int, station_two: int,
-                           station_three: int, station_four: int,
-                           station_five: int, station_six: int):
+async def set_group_scores(group: str, fairness: int, score_list: List[int] = [0,0,0,0,0,0]):
     groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
-    groups_t.update({'station_scores': [
-                            station_one,
-                            station_two,
-                            station_three,
-                            station_four,
-                            station_five,
-                            station_six
-                    ]}, Group_Q.name == group)
+    groups_t.update({'station_scores': score_list}, Group_Q.name == group)
+    return
 
 @app.post("/groups/create")
 async def create_group(name:str, stations:List[str]):
