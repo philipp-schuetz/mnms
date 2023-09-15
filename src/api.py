@@ -11,10 +11,10 @@ app = FastAPI()
 # db = TinyDB('db.json', storage=CachingMiddleware(JSONStorage))
 db = TinyDB('db.json')
 
-participants = db.table('participants')
-classes = db.table('classes')
-groups = db.table('groups')
-stations = db.table('stations')
+participants_t = db.table('participants')
+classes_t = db.table('classes')
+groups_t = db.table('groups')
+stations_t = db.table('stations')
 
 Participant_Q = Query()
 Class_Q = Query()
@@ -27,38 +27,38 @@ async def root():
 
 @app.post("/classes/create")
 async def create_class(name: str, room: str, teacher: str):
-    class_id = classes.insert({
+    class_id = classes_t.insert({
         'name': name,
         'room': room,
         'teacher': teacher
     })
-    print(classes.all())
+    print(classes_t.all())
     return {"ID": class_id}
 
 @app.get("/classes/info")
 async def get_class_info(class_name: str):
-    return classes.get(Class_Q.name == class_name)
+    return classes_t.get(Class_Q.name == class_name)
 
 @app.post("/groups/create")
 async def create_group(name:str, stations:List[str]):
     if len(stations) != 8:
         return {"error": "stations should be a list with lenght 8"}
-    group_id = groups.insert({
+    group_id = groups_t.insert({
         'name': name,
         'fairness_score': 0,
         'station_scores': [0, 0, 0, 0, 0, 0],
         'stations': stations
     })
-    print(groups.all())
+    print(groups_t.all())
     return {"ID": group_id}
 
 @app.get("/groups/{group}/participants")
 async def get_group_participants(group: str):
-    return participants.search(Participant_Q.group == group)
+    return participants_t.search(Participant_Q.group == group)
 
 @app.get("/groups/{group}/scores")
 async def get_group_scores(group: str):
-    result = groups.search(Group_Q.name == group)
+    result = groups_t.search(Group_Q.name == group)
     return {
         "fairness_score": result["fairness_score"],
         "station_scores": result["station_scores"]
@@ -69,8 +69,8 @@ async def set_group_scores(group: str, fairness: int,
                            station_one: int, station_two: int,
                            station_three: int, station_four: int,
                            station_five: int, station_six: int):
-    groups.update({'fairness_score': fairness}, Group_Q.name == group)
-    groups.update({'station_scores': [
+    groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
+    groups_t.update({'station_scores': [
                             station_one,
                             station_two,
                             station_three,
@@ -81,10 +81,10 @@ async def set_group_scores(group: str, fairness: int,
 
 @app.get("/groups/{group}/stations")
 async def get_group_stations(group: str):
-    stations_res = groups.get(Group_Q.name == group)['stations']
+    stations_res = groups_t.get(Group_Q.name == group)['stations']
     output = {'stations': {}}
     for station in stations_res:
-        station_info = stations.search(Station_Q.name == station)
+        station_info = stations_t.search(Station_Q.name == station)
         output['stations'][station] = {
             'name': station_info['name'],
             'room': station_info['room']
@@ -95,36 +95,34 @@ async def get_group_stations(group: str):
 async def create_participant(firstname: str, lastname: str,
                     class_name: str, group_name: str,
                     present: bool = False):
-    participant_id = participants.insert({
+    participant_id = participants_t.insert({
         'firstname': firstname,
         'lastname': lastname,
         'class': class_name,
         'group': group_name,
         'present': present
     })
-    print(participants.all())
+    print(participants_t.all())
     return {"ID": participant_id}
 
 @app.post("/stations/create")
 async def create_station(name: str, subject: str, room: str):
-    station_id = stations.insert({
+    station_id = stations_t.insert({
         'name': name,
         'subject': subject,
         'room': room
     })
-    print(stations.all())
+    print(stations_t.all())
     return {"ID": station_id}
 
 @app.get("/stations/get-all")
 async def get_all_stations():
-    return stations.all()
-
-# TODO delete for all the other stuff
+    return stations_t.all()
 
 @app.delete("participants/delete-all")
 async def delete_all_participants(code: int):
     if code == 3594:
-        participants.truncate()
+        participants_t.truncate()
 
 @app.delete("/delete-all")
 async def delete_all_data(code: int):
