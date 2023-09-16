@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
+	import StationsTable from './StationsTable.svelte';
+	import ParticipantsTable from './ParticipantsTable.svelte';
 
 	const groupName = $page.params.groupName;
 	const className = groupName.replace(/-\d$/, '')
@@ -21,19 +23,29 @@
 
 	let stationsData = [];
 	let classData = {};
+	let participantsData = [];
 
 	onMount(async () => {
 		const data = await getData(`/groups/${groupName}/stations`);
 		stationsData = data.stations;
 		classData = await getData(`/classes/info?class_name=${className}`);
+		participantsData = await getData(`/groups/${groupName}/participants`);
 	});
 </script>
-
-{#each stationsData as station (station.name)}
-<p>
-	Station: {station.subject}<br>
-	Raum: {station.room}
-</p>
-{/each}
-
-{classData.room}, {classData.teacher}
+<div class="container">
+	<div class="row">
+	  <div class="col">
+		<StationsTable {stationsData} />
+	  </div>
+	  <div class="col">
+		<span class="bold">Klassenraum:</span> {classData.room} <br>
+		<span class="bold">KlassenlehrerIn:</span> {classData.teacher}
+		<ParticipantsTable {participantsData} />
+	  </div>
+	</div>
+  </div>
+<style>
+	.bold {
+		font-weight: bold;
+	}
+</style>
