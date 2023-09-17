@@ -8,6 +8,10 @@
 	let stationScores = [];
 	let fairnessScore = 0;
 
+	$: {
+		putScores(stationScores);
+	}
+
 	onMount(async () => {
 		const data = await fetchData(`/groups/${groupName}/stations`);
 		stationsData = data.stations;
@@ -28,6 +32,10 @@
 		} else if (!increment && stationScores[station_index] > 0) {
 			stationScores[station_index] -= 1;
 		}
+	}
+
+	function putScores(stationScores){
+		console.log(`stationScores has changed to: ${stationScores}`);
 	}
 </script>
 
@@ -53,17 +61,26 @@
 					<td>{station.room}</td>
 					<td>
 						{#if index < 5}
-							{stationScores[index]}
+							{stationScores[index]}<br>
 							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index, false)}>-</button>
 							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index, true)}>+</button>
 						{:else}
-							{stationScores[index-2]}
+							{stationScores[index-2]}<br>
 							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index-2, false)}>-</button>
 							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index-2, true)}>+</button>
 						{/if}
 					</td>
 				{/if}
 			</tr>
+			{#if index === 7}
+				<tr>
+					<td colspan="4">
+						Fairness Punkte: {fairnessScore}
+						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore > 0){fairnessScore -= 1}}}>-</button>
+						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore < 5){fairnessScore += 1}}}>+</button>
+					</td>
+				</tr>
+			{/if}
 		{/each}
 	</tbody>
 </table>
