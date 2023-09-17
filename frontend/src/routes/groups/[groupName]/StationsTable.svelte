@@ -17,7 +17,6 @@
 	});
 
 	let times = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
-	let timesCount = 0;
 
 	function scoreIncrement(station_number) {
 		if (stationScores[station_number] < 5) {
@@ -42,9 +41,9 @@
 	  </tr>
 	</thead>
 	<tbody>
-		{#each stationsData as station (station.name)}
+		{#each stationsData as station, index (station.name)}
 			<tr>
-				<th scope="row">{times[timesCount]}</th>
+				<th scope="row">{times[index]}</th>
 				{#if station.name === 'allgemein-1'}
 					<td colspan="3" class="bold">{station.subject} in der {station.room}</td>
 				{:else if station.name === 'allgemein-2'}
@@ -53,9 +52,15 @@
 					<td>{station.subject}</td>
 					<td>{station.room}</td>
 					<td>
-						{stationScores[0]}
-						<button type="button" class="btn btn-primary" on:click={scoreDecrement(0)}>-</button>
-						<button type="button" class="btn btn-primary" on:click={scoreIncrement(0)}>+</button>
+						{#if index < 5}
+							{stationScores[index]}
+							<button type="button" class="btn btn-primary" on:click={() => scoreDecrement(index)}>-</button>
+							<button type="button" class="btn btn-primary" on:click={() => scoreIncrement(index)}>+</button>
+						{:else}
+							{stationScores[index-2]}
+							<button type="button" class="btn btn-primary" on:click={() => scoreDecrement(index-2)}>-</button>
+							<button type="button" class="btn btn-primary" on:click={() => scoreIncrement(index-2)}>+</button>
+						{/if}
 					</td>
 				{/if}
 			</tr>
