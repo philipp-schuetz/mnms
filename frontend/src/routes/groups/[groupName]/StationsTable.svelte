@@ -3,13 +3,18 @@
 
 	import { onMount } from 'svelte';
 	import { fetchData } from '../../../api.js'
+	import { env } from '$env/dynamic/public';
+
+	let mounted = false;
 
 	let stationsData = [];
-	let stationScores = [];
+	let stationScores = [0, 0, 0, 0, 0, 0];
 	let fairnessScore = 0;
 
 	$: {
-		putScores(stationScores);
+		if (mounted) {
+			putScores(stationScores, fairnessScore);
+		}
 	}
 
 	onMount(async () => {
@@ -18,6 +23,7 @@
 		const scoreData = await fetchData(`/groups/${groupName}/scores`);
 		stationScores = scoreData.station_scores;
 		fairnessScore = scoreData.fairness_score;
+		mounted = true;
 	});
 
 	let times = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
@@ -34,8 +40,25 @@
 		}
 	}
 
-	function putScores(stationScores){
-		console.log(`stationScores has changed to: ${stationScores}`);
+	async function putScores(stationScores, fairnessScore) {
+		const url = `${env.PUBLIC_API_PATH}/groups/7midi-1/scores?fairness=${fairnessScore}`
+		const requestOptions = {
+			method: 'PUT',
+			body: JSON.stringify(stationScores),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+		try {
+			const response = await fetch(url, requestOptions);
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
 	}
 </script>
 
