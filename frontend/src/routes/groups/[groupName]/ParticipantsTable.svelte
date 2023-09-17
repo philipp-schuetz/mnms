@@ -1,6 +1,14 @@
 <script>
-export let participantsData;
-console.log(participantsData);
+	export let groupName;
+
+	import { onMount } from 'svelte';
+	import { fetchData } from '../../../api.js'
+
+	let participantsData = [];
+
+	onMount(async () => {
+			participantsData = await fetchData(`/groups/${groupName}/participants`);
+		});
 </script>
 <table class="table table-striped">
 	<thead>
