@@ -18,17 +18,17 @@
 
 	let times = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
 
-	function scoreIncrement(station_number) {
-		if (stationScores[station_number] < 5) {
-			stationScores[station_number] += 1;
+	/**
+	 * @param {int} station_index
+	 * @param {boolean} increment
+	 */
+	function scoreChange(station_index, increment) {
+		if (increment && stationScores[station_index] < 5) {
+			stationScores[station_index] += 1;
+		} else if (!increment && stationScores[station_index] > 0) {
+			stationScores[station_index] -= 1;
 		}
 	}
-	function scoreDecrement(station_number) {
-		if (stationScores[station_number] > 0) {
-			stationScores[station_number] -= 1;
-		}
-	}
-
 </script>
 
 <table class="table table-striped">
@@ -54,12 +54,12 @@
 					<td>
 						{#if index < 5}
 							{stationScores[index]}
-							<button type="button" class="btn btn-primary" on:click={() => scoreDecrement(index)}>-</button>
-							<button type="button" class="btn btn-primary" on:click={() => scoreIncrement(index)}>+</button>
+							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index, false)}>-</button>
+							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index, true)}>+</button>
 						{:else}
 							{stationScores[index-2]}
-							<button type="button" class="btn btn-primary" on:click={() => scoreDecrement(index-2)}>-</button>
-							<button type="button" class="btn btn-primary" on:click={() => scoreIncrement(index-2)}>+</button>
+							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index-2, false)}>-</button>
+							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index-2, true)}>+</button>
 						{/if}
 					</td>
 				{/if}
