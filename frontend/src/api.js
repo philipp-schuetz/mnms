@@ -1,5 +1,8 @@
 import { env } from '$env/dynamic/public';
 
+/**
+ * @param {string} url
+ */
 async function fetchData(url) {
 	try {
 		const response = await fetch(`${env.PUBLIC_API_PATH}${url}`);
