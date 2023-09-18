@@ -41,7 +41,13 @@ async def create_class(name: str, room: str, teacher: str):
 
 @app.get("/groups/{group}/participants")
 async def get_group_participants(group: str):
-    return participants_t.search(Participant_Q.group == group)
+    group_participants = participants_t.search(Participant_Q.group == group)
+    output = []
+    for participant in group_participants:
+        participant_with_id = {"id": participant.doc_id}
+        participant_with_id.update(participant)
+        output.append(participant_with_id)
+    return output
 
 @app.get("/groups/{group}/stations")
 async def get_group_stations(group: str):
