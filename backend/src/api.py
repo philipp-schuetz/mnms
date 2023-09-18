@@ -65,6 +65,14 @@ async def get_group_scores(group: str):
         "station_scores": result["station_scores"]
     }
 
+@app.get("/groups/get-all")
+async def get_all_groups():
+    all_groups = groups_t.all()
+    out = []
+    for group in all_groups:
+        out.append(group['name'])
+    return out
+
 @app.put("/groups/{group}/scores")
 async def set_group_scores(group: str, fairness: int, score_list: List[int] = [0,0,0,0,0,0]):
     groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
@@ -97,6 +105,10 @@ async def create_participant(firstname: str, lastname: str,
     })
     print(participants_t.all())
     return {"ID": participant_id}
+
+@app.put("/participants/set-present")
+async def set_participant_present(participant_id: str):#TODO
+    pass
 
 @app.get("/stations/get-all")
 async def get_all_stations():
