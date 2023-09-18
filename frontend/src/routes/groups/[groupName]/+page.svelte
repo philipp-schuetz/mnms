@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	import { fetchData } from '../../../api.js'
 	import StationsTable from './StationsTable.svelte';
-	import ParticipantsTable from './ParticipantsTable.svelte';
 
 	const groupName = $page.params.groupName;
 	const className = groupName.replace(/-\d$/, '')
@@ -22,7 +21,6 @@
 	  <div class="col">
 		<span class="bold">Klassenraum:</span> {classData.room} <br>
 		<span class="bold">KlassenlehrerIn:</span> {classData.teacher}
-		<ParticipantsTable {groupName} />
 	  </div>
 	</div>
   </div>
