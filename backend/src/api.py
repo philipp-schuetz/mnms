@@ -113,8 +113,8 @@ async def create_participant(firstname: str, lastname: str,
     return {"ID": participant_id}
 
 @app.put("/participants/set-present")
-async def set_participant_present(participant_id: str):#TODO
-    pass
+async def set_participant_present(participant_id: int, present: bool):
+    participants_t.update({'present': present}, doc_ids=[participant_id])
 
 @app.get("/stations/get-all")
 async def get_all_stations():
