@@ -100,7 +100,7 @@
 					<td colspan="4">
 						Fairness Punkte: {fairnessScore}
 						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore > 0){fairnessScore -= 1}}}>-</button>
-						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore < 5){fairnessScore += 1}}}>+</button>
+						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore < 3){fairnessScore += 1}}}>+</button>
 					</td>
 				</tr>
 			{/if}
