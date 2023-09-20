@@ -13,10 +13,17 @@
 			group_scores_tmp = await fetchData(`/groups/${group}/scores`);
 			group_scores[group] = group_scores_tmp;
 		}
-		console.log(group_scores);
-		console.log(group_scores['7midi-1'])
 		mounted = true;
 	});
+
+	function sumScores(station_scores, fairness_score) {
+		let sum = 0;
+		for (let score of station_scores) {
+			sum += score;
+		}
+		sum += fairness_score;
+		return sum;
+	}
 </script>
 
 <table class="table table-striped">
@@ -42,7 +49,7 @@
 						<td>{score}</td>
 					{/each}
 					<td>{group_scores[String(group)].fairness_score}</td>
-					<th>0</th>
+					<th>{sumScores(group_scores[String(group)].station_scores, group_scores[String(group)].fairness_score)}</th>
 				</tr>
 			{/each}
 		{/if}
