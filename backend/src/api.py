@@ -98,6 +98,10 @@ async def create_group(name:str, stations:List[str]):
     print(groups_t.all())
     return {"ID": group_id}
 
+@app.get("/participants/get-all")
+async def get_all_participants():
+    return participants_t.all()
+
 @app.post("/participants/create")
 async def create_participant(firstname: str, lastname: str,
                     class_name: str, group_name: str,
