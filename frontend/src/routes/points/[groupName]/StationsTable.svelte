@@ -12,7 +12,7 @@
 	let fairnessScore = 0;
 
 	$: {
-		if (mounted) {
+		if (mounted && isConnected) {
 			putScores(stationScores, fairnessScore);
 		}
 	}
@@ -27,6 +27,23 @@
 	});
 
 	let times = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
+
+	let isConnected = navigator.onLine;
+	window.addEventListener('online', () => {
+	isConnected = true;
+	});
+	window.addEventListener('offline', () => {
+	isConnected = false;
+	});
+
+	let showWarning = false;
+	window.addEventListener('beforeunload', (event) => {
+	if (!isConnected) {
+		event.preventDefault();
+		event.returnValue = 'You have unsaved data. Are you sure you want to leave?';
+		showWarning = true;
+	}
+	});
 
 	/**
 	 * @param {int} station_index
@@ -61,6 +78,12 @@
 		}
 	}
 </script>
+
+{#if showWarning}
+	<div class="warning">
+		<p>By leaving the site data could be lost due to missing network connection.</p>
+	</div>
+{/if}
 
 <table class="table table-striped">
 	<thead>
