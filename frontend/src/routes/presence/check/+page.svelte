@@ -35,7 +35,7 @@
 						<td>{participant.group}</td>
 						<td>
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" bind:checked={participant.present} onclick="return false;" />
+								<input class="form-check-input" type="checkbox" bind:checked={participant.present} disabled />
 							</div>
 						</td>
 					</tr>
@@ -47,7 +47,7 @@
 					<td>{participant.group}</td>
 					<td>
 						<div class="form-check">
-							<input class="form-check-input" type="checkbox" bind:checked={participant.present} onclick="return false;" />
+							<input class="form-check-input" type="checkbox" bind:checked={participant.present} disabled />
 						</div>
 					</td>
 				</tr>
