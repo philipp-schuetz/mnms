@@ -5,10 +5,35 @@
 	import { onMount } from 'svelte';
 	import { fetchData } from '../../../api.js';
 
+	let mounted = false;
+	let isConnected = false;
+
 	let participantsData = [];
+
+	let showWarning = false;
 
 	onMount(async () => {
 		participantsData = await fetchData(`/groups/${groupName}/participants`);
+		mounted = true;
+
+		isConnected = navigator.onLine;
+		window.addEventListener('online', () => {
+			console.log('online');
+			isConnected = true;
+			showWarning = false;
+		});
+		window.addEventListener('offline', () => {
+			console.log('offline');
+			isConnected = false;
+			showWarning = true;
+		});
+
+		window.addEventListener('beforeunload', (event) => {
+			if (!isConnected) {
+				event.preventDefault();
+				event.returnValue = 'You may have unsaved data. Are you sure you want to leave?';
+			}
+		});
 	});
 
 	async function setPresence(participantId, present) {
@@ -21,6 +46,12 @@
 		}
 	}
 </script>
+
+{#if showWarning}
+	<div class="warning">
+		<p>By leaving the site data could be lost due to missing network connection.</p>
+	</div>
+{/if}
 
 <table class="table table-striped">
 	<thead>
@@ -37,7 +68,10 @@
 			<td>{participant.lastname}</td>
 			<td>
 				<div class="form-check">
-					<input class="form-check-input" type="checkbox" bind:checked={participant.present} on:change={() => setPresence(participant.id, participant.present)} />
+					<input class="form-check-input" type="checkbox" bind:checked={participant.present} on:change={() => {
+						if (isConnected) {
+							setPresence(participant.id, participant.present)
+						}}} />
 				</div>
 			</td>
 		</tr>
