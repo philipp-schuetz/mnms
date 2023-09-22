@@ -6,14 +6,19 @@
 	import { env } from '$env/dynamic/public';
 
 	let mounted = false;
+	let isConnected = false;
 
 	let stationsData = [];
 	let stationScores = [0, 0, 0, 0, 0, 0];
 	let fairnessScore = 0;
 
+	let showWarning = false;
+
 	$: {
-		if (mounted && isConnected) {
-			putScores(stationScores, fairnessScore);
+		if (mounted) {
+			if (isConnected) {
+				putScores(stationScores, fairnessScore);
+			}
 		}
 	}
 
@@ -24,26 +29,28 @@
 		stationScores = scoreData.station_scores;
 		fairnessScore = scoreData.fairness_score;
 		mounted = true;
+
+		isConnected = navigator.onLine;
+		window.addEventListener('online', () => {
+			console.log('online');
+			isConnected = true;
+			showWarning = false;
+		});
+		window.addEventListener('offline', () => {
+			console.log('offline');
+			isConnected = false;
+			showWarning = true;
+		});
+
+		window.addEventListener('beforeunload', (event) => {
+			if (!isConnected) {
+				event.preventDefault();
+				event.returnValue = 'You have unsaved data. Are you sure you want to leave?';
+			}
+		});
 	});
 
 	let times = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
-
-	let isConnected = navigator.onLine;
-	window.addEventListener('online', () => {
-	isConnected = true;
-	});
-	window.addEventListener('offline', () => {
-	isConnected = false;
-	});
-
-	let showWarning = false;
-	window.addEventListener('beforeunload', (event) => {
-	if (!isConnected) {
-		event.preventDefault();
-		event.returnValue = 'You have unsaved data. Are you sure you want to leave?';
-		showWarning = true;
-	}
-	});
 
 	/**
 	 * @param {int} station_index
