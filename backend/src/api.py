@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from tinydb import TinyDB, Query
 from tinydb.storages import JSONStorage
@@ -7,6 +8,16 @@ from tinydb.middlewares import CachingMiddleware
 from typing import List
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # db = TinyDB('db.json', storage=CachingMiddleware(JSONStorage))
 db = TinyDB('db.json')
