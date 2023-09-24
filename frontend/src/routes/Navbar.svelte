@@ -1,3 +1,13 @@
+<script>
+	import { onMount } from 'svelte';
+	import { fetchData } from '../api.js';
+
+	let groups = [];
+	onMount(async () => {
+		groups = await fetchData(`/groups/get-all`);
+	});
+</script>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
 	<div class="container-fluid">
 		<a
@@ -38,18 +48,14 @@
 						Punkte
 					</a>
 					<ul class="dropdown-menu">
-						<li>
-							<a
-								class="dropdown-item"
-								href="/points/7midi-1">7midi-1</a
-							>
-						</li>
-						<li>
-							<a
-								class="dropdown-item"
-								href="/points/7midi-2">7midi-2</a
-							>
-						</li>
+						{#each groups as group}
+							<li>
+								<a
+									class="dropdown-item"
+									href="/points/{group}">{group}</a
+								>
+							</li>
+						{/each}
 					</ul>
 				</li>
 				<li class="nav-item dropdown">
@@ -63,18 +69,14 @@
 						Anwesenheit
 					</a>
 					<ul class="dropdown-menu">
-						<li>
-							<a
-								class="dropdown-item"
-								href="/presence/7midi-1">7midi-1</a
-							>
-						</li>
-						<li>
-							<a
-								class="dropdown-item"
-								href="/presence/7midi-2">7midi-2</a
-							>
-						</li>
+						{#each groups as group}
+							<li>
+								<a
+									class="dropdown-item"
+									href="/points/{group}">{group}</a
+								>
+							</li>
+						{/each}
 						<li><hr class="dropdown-divider" /></li>
 						<li>
 							<a
