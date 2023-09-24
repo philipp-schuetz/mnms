@@ -61,7 +61,7 @@
 				<li class="nav-item dropdown">
 					<a
 						class="nav-link dropdown-toggle"
-						href="/points"
+						href="/presence"
 						role="button"
 						data-bs-toggle="dropdown"
 						aria-expanded="false"
@@ -73,7 +73,7 @@
 							<li>
 								<a
 									class="dropdown-item"
-									href="/points/{group}">{group}</a
+									href="/presence/{group}">{group}</a
 								>
 							</li>
 						{/each}
