@@ -31,7 +31,8 @@
 		window.addEventListener('beforeunload', (event) => {
 			if (!isConnected) {
 				event.preventDefault();
-				event.returnValue = 'You may have unsaved data. Are you sure you want to leave?';
+				event.returnValue =
+					'You may have unsaved data. Are you sure you want to leave?';
 			}
 		});
 	});
@@ -39,7 +40,7 @@
 	async function setPresence(participantId, present) {
 		try {
 			const url = `/participants/set-present?participant_id=${participantId}&present=${present}`;
-			const requestOptions = {method: 'PUT'};
+			const requestOptions = { method: 'PUT' };
 			await fetch(`${env.PUBLIC_API_PATH}${url}`, requestOptions);
 		} catch (error) {
 			console.error('Error updating presence:', error);
@@ -49,7 +50,9 @@
 
 {#if showWarning}
 	<div class="warning">
-		<p>By leaving the site data could be lost due to missing network connection.</p>
+		<p>
+			By leaving the site data could be lost due to missing network connection.
+		</p>
 	</div>
 {/if}
 
@@ -63,18 +66,24 @@
 	</thead>
 	<tbody>
 		{#each participantsData as participant (participant.id)}
-		<tr>
-			<td>{participant.firstname}</td>
-			<td>{participant.lastname}</td>
-			<td>
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" bind:checked={participant.present} on:change={() => {
-						if (isConnected) {
-							setPresence(participant.id, participant.present)
-						}}} />
-				</div>
-			</td>
-		</tr>
+			<tr>
+				<td>{participant.firstname}</td>
+				<td>{participant.lastname}</td>
+				<td>
+					<div class="form-check">
+						<input
+							class="form-check-input"
+							type="checkbox"
+							bind:checked={participant.present}
+							on:change={() => {
+								if (isConnected) {
+									setPresence(participant.id, participant.present);
+								}
+							}}
+						/>
+					</div>
+				</td>
+			</tr>
 		{/each}
 	</tbody>
 </table>

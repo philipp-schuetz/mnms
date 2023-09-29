@@ -9,7 +9,12 @@
 		participantsData = await fetchData(`/participants/get-all`);
 	});
 </script>
-<button type="button" class="btn btn-primary" on:click={() => not_present_switch = !not_present_switch}>
+
+<button
+	type="button"
+	class="btn btn-primary"
+	on:click={() => (not_present_switch = !not_present_switch)}
+>
 	{#if not_present_switch}
 		Not Present
 	{:else}
@@ -35,7 +40,12 @@
 						<td>{participant.group}</td>
 						<td>
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" bind:checked={participant.present} disabled />
+								<input
+									class="form-check-input"
+									type="checkbox"
+									bind:checked={participant.present}
+									disabled
+								/>
 							</div>
 						</td>
 					</tr>
@@ -47,12 +57,16 @@
 					<td>{participant.group}</td>
 					<td>
 						<div class="form-check">
-							<input class="form-check-input" type="checkbox" bind:checked={participant.present} disabled />
+							<input
+								class="form-check-input"
+								type="checkbox"
+								bind:checked={participant.present}
+								disabled
+							/>
 						</div>
 					</td>
 				</tr>
 			{/if}
-
 		{/each}
 	</tbody>
 </table>

@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { fetchData } from '../api.js'
+	import { fetchData } from '../api.js';
 
 	export let baseUrl;
 
@@ -10,6 +10,7 @@
 		groups = await fetchData(`/groups/get-all`);
 	});
 </script>
+
 {#each groups as group}
-	<a href="/{baseUrl}/{group}">{group}</a><br>
+	<a href="/{baseUrl}/{group}">{group}</a><br />
 {/each}

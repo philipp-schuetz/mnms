@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { fetchData } from '../../api.js'
+	import { fetchData } from '../../api.js';
 
 	let groups = [];
 	let group_scores = {};
@@ -28,17 +28,17 @@
 
 <table class="table table-striped">
 	<thead>
-	  <tr>
-		<th scope="col">Gruppe</th>
-		<th scope="col">Station 1</th>
-		<th scope="col">Station 2</th>
-		<th scope="col">Station 3</th>
-		<th scope="col">Station 4</th>
-		<th scope="col">Station 5</th>
-		<th scope="col">Station 6</th>
-		<th scope="col">Fairness</th>
-		<th scope="col">Gesamt</th>
-	  </tr>
+		<tr>
+			<th scope="col">Gruppe</th>
+			<th scope="col">Station 1</th>
+			<th scope="col">Station 2</th>
+			<th scope="col">Station 3</th>
+			<th scope="col">Station 4</th>
+			<th scope="col">Station 5</th>
+			<th scope="col">Station 6</th>
+			<th scope="col">Fairness</th>
+			<th scope="col">Gesamt</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#if mounted}
@@ -49,7 +49,12 @@
 						<td>{score}</td>
 					{/each}
 					<td>{group_scores[String(group)].fairness_score}</td>
-					<th>{sumScores(group_scores[String(group)].station_scores, group_scores[String(group)].fairness_score)}</th>
+					<th
+						>{sumScores(
+							group_scores[String(group)].station_scores,
+							group_scores[String(group)].fairness_score
+						)}</th
+					>
 				</tr>
 			{/each}
 		{/if}

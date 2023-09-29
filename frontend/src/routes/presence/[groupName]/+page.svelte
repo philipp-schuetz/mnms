@@ -5,4 +5,4 @@
 	const groupName = $page.params.groupName;
 </script>
 
-<ParticipantsTable {groupName}></ParticipantsTable>
+<ParticipantsTable {groupName} />

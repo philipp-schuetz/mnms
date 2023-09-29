@@ -2,7 +2,7 @@
 	export let groupName;
 
 	import { onMount } from 'svelte';
-	import { fetchData } from '../../../api.js'
+	import { fetchData } from '../../../api.js';
 	import { env } from '$env/dynamic/public';
 
 	let mounted = false;
@@ -45,12 +45,22 @@
 		window.addEventListener('beforeunload', (event) => {
 			if (!isConnected) {
 				event.preventDefault();
-				event.returnValue = 'You have unsaved data. Are you sure you want to leave?';
+				event.returnValue =
+					'You have unsaved data. Are you sure you want to leave?';
 			}
 		});
 	});
 
-	let times = ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'];
+	let times = [
+		'17:30',
+		'18:00',
+		'18:30',
+		'19:00',
+		'19:30',
+		'20:00',
+		'20:30',
+		'21:00',
+	];
 
 	/**
 	 * @param {int} station_index
@@ -65,7 +75,7 @@
 	}
 
 	async function putScores(stationScores, fairnessScore) {
-		const url = `${env.PUBLIC_API_PATH}/groups/7midi-1/scores?fairness=${fairnessScore}`
+		const url = `${env.PUBLIC_API_PATH}/groups/7midi-1/scores?fairness=${fairnessScore}`;
 		const requestOptions = {
 			method: 'PUT',
 			body: JSON.stringify(stationScores),
@@ -88,39 +98,63 @@
 
 {#if showWarning}
 	<div class="warning">
-		<p>By leaving the site data could be lost due to missing network connection.</p>
+		<p>
+			By leaving the site data could be lost due to missing network connection.
+		</p>
 	</div>
 {/if}
 
 <table class="table table-striped">
 	<thead>
-	  <tr>
-		<th scope="col">Zeit</th>
-		<th scope="col">Station</th>
-		<th scope="col">Raum</th>
-		<th scope="col">Punkte</th>
-	  </tr>
+		<tr>
+			<th scope="col">Zeit</th>
+			<th scope="col">Station</th>
+			<th scope="col">Raum</th>
+			<th scope="col">Punkte</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each stationsData as station, index (station.name)}
 			<tr>
 				<th scope="row">{times[index]}</th>
 				{#if station.name === 'allgemein-1'}
-					<td colspan="3" class="bold">{station.subject} in der {station.room}</td>
+					<td
+						colspan="3"
+						class="bold">{station.subject} in der {station.room}</td
+					>
 				{:else if station.name === 'allgemein-2'}
-					<td colspan="3" class="bold">{station.subject} auf dem {station.room}</td>
+					<td
+						colspan="3"
+						class="bold">{station.subject} auf dem {station.room}</td
+					>
 				{:else}
 					<td>{station.subject}</td>
 					<td>{station.room}</td>
 					<td>
 						{#if index < 5}
-							{stationScores[index]}<br>
-							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index, false)}>-</button>
-							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index, true)}>+</button>
+							{stationScores[index]}<br />
+							<button
+								type="button"
+								class="btn btn-primary"
+								on:click={() => scoreChange(index, false)}>-</button
+							>
+							<button
+								type="button"
+								class="btn btn-primary"
+								on:click={() => scoreChange(index, true)}>+</button
+							>
 						{:else}
-							{stationScores[index-2]}<br>
-							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index-2, false)}>-</button>
-							<button type="button" class="btn btn-primary" on:click={() => scoreChange(index-2, true)}>+</button>
+							{stationScores[index - 2]}<br />
+							<button
+								type="button"
+								class="btn btn-primary"
+								on:click={() => scoreChange(index - 2, false)}>-</button
+							>
+							<button
+								type="button"
+								class="btn btn-primary"
+								on:click={() => scoreChange(index - 2, true)}>+</button
+							>
 						{/if}
 					</td>
 				{/if}
@@ -129,8 +163,24 @@
 				<tr>
 					<td colspan="4">
 						Fairness Punkte: {fairnessScore}
-						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore > 0){fairnessScore -= 1}}}>-</button>
-						<button type="button" class="btn btn-primary" on:click={() => {if(fairnessScore < 3){fairnessScore += 1}}}>+</button>
+						<button
+							type="button"
+							class="btn btn-primary"
+							on:click={() => {
+								if (fairnessScore > 0) {
+									fairnessScore -= 1;
+								}
+							}}>-</button
+						>
+						<button
+							type="button"
+							class="btn btn-primary"
+							on:click={() => {
+								if (fairnessScore < 3) {
+									fairnessScore += 1;
+								}
+							}}>+</button
+						>
 					</td>
 				</tr>
 			{/if}
