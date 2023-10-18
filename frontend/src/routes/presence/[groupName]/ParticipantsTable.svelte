@@ -1,19 +1,15 @@
 <script>
-	export let groupName;
+	export let participantsData;
 
 	import { env } from '$env/dynamic/public';
 	import { onMount } from 'svelte';
-	import { fetchData } from '../../../api.js';
 
 	let mounted = false;
 	let isConnected = false;
 
-	let participantsData = [];
-
 	let showWarning = false;
 
 	onMount(async () => {
-		participantsData = await fetchData(`/groups/${groupName}/participants`);
 		mounted = true;
 
 		isConnected = navigator.onLine;
