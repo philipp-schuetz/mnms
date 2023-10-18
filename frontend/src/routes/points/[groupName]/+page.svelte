@@ -1,33 +1,21 @@
 <script>
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import { fetchData } from '../../../api.js';
 	import StationsTable from './StationsTable.svelte';
 
-	const groupName = $page.params.groupName;
-	const className = groupName.replace(/-\d$/, '');
-
-	let classData = {};
-
-	onMount(async () => {
-		classData = await fetchData(`/classes/info?class_name=${className}`);
-	});
+	export let data;
 </script>
 
 <div class="container">
 	<div class="col">
 		<div class="row">
-			<span class="bold">Klassenraum: {classData.room}</span>
-			<span class="bold">KlassenlehrerIn: {classData.teacher}</span>
+			<h1>Punkteübersicht - {data.className} - Gruppe {data.groupNumber}</h1>
+			<h2>Raum: {data.classData.room} - {data.classData.teacher}</h2>
 		</div>
 		<div class="row">
-			<StationsTable {groupName} />
+			<StationsTable
+				stationsData={data.stationsData}
+				stationScores={data.stationScores}
+				fairnessScore={data.fairnessScore}
+			/>
 		</div>
 	</div>
 </div>
-
-<style>
-	.bold {
-		font-weight: bold;
-	}
-</style>

@@ -1,16 +1,14 @@
 <script>
-	export let groupName;
+	export let stationsData;
+	export let stationScores;
+	export let fairnessScore;
 
 	import { onMount } from 'svelte';
-	import { fetchData } from '../../../api.js';
+
 	import { env } from '$env/dynamic/public';
 
 	let mounted = false;
 	let isConnected = false;
-
-	let stationsData = [];
-	let stationScores = [0, 0, 0, 0, 0, 0];
-	let fairnessScore = 0;
 
 	let showWarning = false;
 
@@ -23,11 +21,6 @@
 	}
 
 	onMount(async () => {
-		const data = await fetchData(`/groups/${groupName}/stations`);
-		stationsData = data.stations;
-		const scoreData = await fetchData(`/groups/${groupName}/scores`);
-		stationScores = scoreData.station_scores;
-		fairnessScore = scoreData.fairness_score;
 		mounted = true;
 
 		isConnected = navigator.onLine;
@@ -75,7 +68,7 @@
 	}
 
 	async function putScores(stationScores, fairnessScore) {
-		const url = `${env.PUBLIC_API_PATH}/groups/7midi-1/scores?fairness=${fairnessScore}`;
+		const url = `${env.PUBLIC_API_PATH}/groups/${groupName}/scores?fairness=${fairnessScore}`;
 		const requestOptions = {
 			method: 'PUT',
 			body: JSON.stringify(stationScores),
