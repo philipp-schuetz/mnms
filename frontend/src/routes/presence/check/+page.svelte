@@ -40,9 +40,9 @@
 			{#if not_present_switch}
 				{#if !participant.present}
 					<tr>
+						<td>{participant.group}</td>
 						<td>{participant.firstname}</td>
 						<td>{participant.lastname}</td>
-						<td>{participant.group}</td>
 						<td>
 							<div class="form-check">
 								<input
@@ -57,9 +57,9 @@
 				{/if}
 			{:else}
 				<tr>
+					<td>{participant.group}</td>
 					<td>{participant.firstname}</td>
 					<td>{participant.lastname}</td>
-					<td>{participant.group}</td>
 					<td>
 						<div class="form-check">
 							<input
