@@ -9,16 +9,21 @@
 		participantsData = await fetchData(`/participants/get-all`);
 	});
 </script>
-
-<button
+<div class="container">
+	<div class="col">
+		<div class="row">
+			<h2>Anwesenheit - Alle Klassen</h2>
+		</div>
+		<div class="row">
+			<button
 	type="button"
 	class="btn btn-primary"
 	on:click={() => (not_present_switch = !not_present_switch)}
 >
 	{#if not_present_switch}
-		Not Present
+		Abwesend
 	{:else}
-		All
+		Alle
 	{/if}
 </button>
 <table class="table table-striped">
@@ -70,3 +75,7 @@
 		{/each}
 	</tbody>
 </table>
+
+		</div>
+	</div>
+</div>

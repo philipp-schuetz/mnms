@@ -2,6 +2,7 @@
 	export let stationsData;
 	export let stationScores;
 	export let fairnessScore;
+	export let groupName;
 
 	import { onMount } from 'svelte';
 
