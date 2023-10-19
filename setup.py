@@ -1,7 +1,7 @@
 import requests
 import json
 
-api_url = 'http://127.0.0.1:8000'
+api_url = 'http://your-api-ip:8000'
 
 def delete_all():
 	# delete all documents from the database
@@ -48,26 +48,56 @@ def create_participant(firstname: str, lastname: str, class_name: str, group_nam
 
 delete_all()
 create_stations()
-create_class('7midi', '123', 'Bob')
+create_class('7midi', '123', 'Hr. Bob')
 create_group('7midi-1', [
-		'chemie-2',
 		'mathematik-1',
 		'physik-2',
+		'chemie-2',
 		'allgemein-1',
 		'allgemein-2',
 		'biologie-1',
 		'informatik-1',
-		'physik-1'
+		'physik-1',
 	])
 create_group('7midi-2', [
 		'chemie-2',
 		'mathematik-1',
 		'physik-2',
-		'allgemein-1',
 		'allgemein-2',
-		'biologie-1',
+		'allgemein-1',
 		'informatik-1',
-		'physik-1'
+		'physik-1',
+		'biologie-1',
 	])
 create_participant('John', 'Doe', '7midi', '7midi-1')
 create_participant('Jane', 'Dane', '7midi', '7midi-2')
+create_participant('Mike', 'Even', '7midi', '7midi-1')
+create_participant('Carol', 'Burnett', '7midi', '7midi-2')
+
+
+create_class('7wxyz', '123', 'Fr. Alice')
+create_group('7wxyz-1', [
+		'biologie-1',
+		'informatik-1',
+		'physik-1',
+		'allgemein-1',
+		'allgemein-2',
+		'mathematik-1',
+		'physik-2',
+		'chemie-2',
+	])
+create_group('7wxyz-2', [
+		'informatik-1',
+		'physik-1',
+		'biologie-1',
+		'allgemein-2',
+		'allgemein-1',
+		'chemie-2',
+		'mathematik-1',
+		'physik-2',
+	])
+create_participant('Dave', 'Charles', '7wxyz', '7wxyz-1')
+create_participant('Frank', 'Miller', '7wxyz', '7wxyz-1')
+create_participant('Judy', 'Garland', '7wxyz', '7wxyz-2')
+create_participant('Wendy', 'Thomas', '7wxyz', '7wxyz-2')
+
