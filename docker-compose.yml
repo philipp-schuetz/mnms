@@ -7,6 +7,8 @@ services:
     build:
       context: .
       dockerfile: DockerfileBackend
+    environment:
+      - ADMIN_PASSWORD=1234
     ports:
       - 8000:80
     volumes:
