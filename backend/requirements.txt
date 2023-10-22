@@ -2,3 +2,4 @@ tinydb
 fastapi
 uvicorn
 python-multipart
+python-jose[cryptography]
