@@ -14,3 +14,8 @@
 - [Frontend](https://mnms.philippschuetz.com)
 - [Backend](https://mnms-api.philippschuetz.com)
 - [Backend Docs](https://mnms-api.philippschuetz.com/docs)
+
+#todo: reformat nicely
+generate a secret key with openssl rand -hex 32 and put in the the environ. var in the docker-compose.yml
+
+password hashing is not enabled in this project, because it doesnt make any sense in this case, we only use pins with numbers
