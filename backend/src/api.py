@@ -125,15 +125,11 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
             detail="admin privileges required",
         )
     else:
-        groups = []
-        for group in groups_t.all():
-            groups.append(group['name'])
-
         classes = []
         for class_ in classes_t.all():
             classes.append(class_['name'])
 
-        if username not in groups and username not in classes:
+        if username not in classes:
             raise HTTPException(status_code=400, detail="username must match any class or group name")
 
         users_t.insert({
@@ -147,11 +143,11 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
 async def root():
     return
 
-@app.get("/classes/info")
+@app.get("/classes/info") # TODO add class authentication
 async def get_class_info(class_name: str):
     return classes_t.get(Class_Q.name == class_name)
 
-@app.post("/classes/create")
+@app.post("/classes/create") # TODO add admin authentication
 async def create_class(name: str, room: str, teacher: str):
     class_id = classes_t.insert({
         'name': name,
@@ -160,7 +156,7 @@ async def create_class(name: str, room: str, teacher: str):
     })
     return {"ID": class_id}
 
-@app.get("/groups/{group}/participants")
+@app.get("/groups/{group}/participants") # TODO add class authentication
 async def get_group_participants(group: str):
     group_participants = participants_t.search(Participant_Q.group == group)
     output = []
@@ -170,7 +166,7 @@ async def get_group_participants(group: str):
         output.append(participant_with_id)
     return output
 
-@app.get("/groups/{group}/stations")
+@app.get("/groups/{group}/stations") # TODO add class authentication
 async def get_group_stations(group: str):
     # get station plan for group
     stations_res = groups_t.get(Group_Q.name == group)['stations']
@@ -184,7 +180,7 @@ async def get_group_stations(group: str):
 		})
     return output
 
-@app.get("/groups/{group}/scores")
+@app.get("/groups/{group}/scores") # TODO add class authentication
 async def get_group_scores(group: str):
     result = groups_t.get(Group_Q.name == group)
     return {
@@ -192,7 +188,7 @@ async def get_group_scores(group: str):
         "station_scores": result["station_scores"]
     }
 
-@app.get("/groups/get-all")
+@app.get("/groups/get-all") # TODO add admin authentication
 async def get_all_groups():
     all_groups = groups_t.all()
     out = []
@@ -200,13 +196,13 @@ async def get_all_groups():
         out.append(group['name'])
     return out
 
-@app.put("/groups/{group}/scores")
+@app.put("/groups/{group}/scores") # TODO add class authentication
 async def set_group_scores(group: str, fairness: int, score_list: List[int] = [0,0,0,0,0,0]):
     groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
     groups_t.update({'station_scores': score_list}, Group_Q.name == group)
     return
 
-@app.post("/groups/create")
+@app.post("/groups/create") # TODO add admin authentication
 async def create_group(name:str, stations:List[str]):
     if len(stations) != 8:
         return {"error": "stations should be a list with lenght 8"}
@@ -218,11 +214,11 @@ async def create_group(name:str, stations:List[str]):
     })
     return {"ID": group_id}
 
-@app.get("/participants/get-all")
+@app.get("/participants/get-all") # TODO add admin authentication
 async def get_all_participants():
     return participants_t.all()
 
-@app.post("/participants/create")
+@app.post("/participants/create") # TODO add admin authentication
 async def create_participant(firstname: str, lastname: str,
                     class_name: str, group_name: str,
                     present: bool = False):
@@ -235,15 +231,15 @@ async def create_participant(firstname: str, lastname: str,
     })
     return {"ID": participant_id}
 
-@app.put("/participants/set-present")
+@app.put("/participants/set-present") # TODO add class authentication (route with param for class?) allow all classes
 async def set_participant_present(participant_id: int, present: bool):
     participants_t.update({'present': present}, doc_ids=[participant_id])
 
-@app.get("/stations/get-all")
+@app.get("/stations/get-all") # TODO add admin authentication
 async def get_all_stations():
     return stations_t.all()
 
-@app.post("/stations/create")
+@app.post("/stations/create") # TODO add admin authentication
 async def create_station(name: str, subject: str, room: str):
     station_id = stations_t.insert({
         'name': name,
@@ -252,7 +248,7 @@ async def create_station(name: str, subject: str, room: str):
     })
     return {"ID": station_id}
 
-@app.delete("participants/delete-all")
+@app.delete("participants/delete-all") # TODO add admin authentication
 async def delete_all_participants(code: int):
     if code == 3594:
         participants_t.truncate()
