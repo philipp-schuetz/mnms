@@ -18,6 +18,8 @@ SECRET_KEY = "3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
+
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -63,7 +65,9 @@ class UserInDB(User):
     password: str
 
 def get_user(username: str):
-    return classes_t.get(User_Q.username == username)
+    if username == 'admin':
+        return {'username': 'admin', 'password': ADMIN_PASSWORD}
+    return users_t.get(User_Q.username == username)
 
 def authenticate_user(username: str, password: str):
     user = get_user(username)
