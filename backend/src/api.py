@@ -274,3 +274,4 @@ async def delete_all_data(code: int):
         classes_t.truncate()
         groups_t.truncate()
         stations_t.truncate()
+        users_t.truncate()
