@@ -1,3 +1,7 @@
+import os
+from typing import List, Annotated
+from datetime import datetime, timedelta
+
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -7,12 +11,8 @@ from tinydb import TinyDB, Query
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 
-from typing import List, Annotated
-from datetime import datetime, timedelta
-
 from pydantic import BaseModel
 
-import os
 
 SECRET_KEY = "3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731"
 ALGORITHM = "HS256"
