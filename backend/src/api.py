@@ -122,39 +122,32 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/users/me/", response_model=User)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    return current_user
-
-
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
 @app.post("/users/create")
-async def create_user(username: str, password: str):# TODO check if current user is admin
-    groups = []
-    for group in groups_t.all():
-        groups.append(group['name'])
+async def create_user(current_user: Annotated[User, Depends(get_current_user)], username: str, password: str):
+    if current_user['username'] != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="admin privileges required",
+        )
+    else:
+        groups = []
+        for group in groups_t.all():
+            groups.append(group['name'])
 
-    classes = []
-    for class_ in classes_t.all():
-        classes.append(class_['name'])
+        classes = []
+        for class_ in classes_t.all():
+            classes.append(class_['name'])
 
-    if username not in groups and username not in classes:
-        raise HTTPException(status_code=400, detail="username must match any class or group name")
+        if username not in groups and username not in classes:
+            raise HTTPException(status_code=400, detail="username must match any class or group name")
 
-    users_t.insert({
-        'username': username,
-        'password': password
-    })
+        users_t.insert({
+            'username': username,
+            'password': password
+        })
 
-    print(users_t.all())
-    return
+        print(users_t.all())
+        return {"message": f"user {username} created"}
 
 @app.get("/")
 async def root():
