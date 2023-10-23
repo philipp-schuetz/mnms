@@ -49,8 +49,6 @@ Group_Q = Query()
 Station_Q = Query()
 User_Q = Query()
 
-# TODO create admin user
-
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -60,9 +58,6 @@ class TokenData(BaseModel):
 
 class User(BaseModel):
     username: str
-
-class UserInDB(User):
-    password: str
 
 def get_user(username: str):
     if username == 'admin':
@@ -99,8 +94,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
+    except JWTError as exc:
+        raise credentials_exception from exc
     user = get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
@@ -118,7 +113,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": user['username']}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -146,7 +141,6 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
             'password': password
         })
 
-        print(users_t.all())
         return {"message": f"user {username} created"}
 
 @app.get("/")
@@ -164,7 +158,6 @@ async def create_class(name: str, room: str, teacher: str):
         'room': room,
         'teacher': teacher
     })
-    print(classes_t.all())
     return {"ID": class_id}
 
 @app.get("/groups/{group}/participants")
@@ -223,7 +216,6 @@ async def create_group(name:str, stations:List[str]):
         'station_scores': [0, 0, 0, 0, 0, 0],
         'stations': stations
     })
-    print(groups_t.all())
     return {"ID": group_id}
 
 @app.get("/participants/get-all")
@@ -241,7 +233,6 @@ async def create_participant(firstname: str, lastname: str,
         'group': group_name,
         'present': present
     })
-    print(participants_t.all())
     return {"ID": participant_id}
 
 @app.put("/participants/set-present")
@@ -259,7 +250,6 @@ async def create_station(name: str, subject: str, room: str):
         'subject': subject,
         'room': room
     })
-    print(stations_t.all())
     return {"ID": station_id}
 
 @app.delete("participants/delete-all")
@@ -267,7 +257,7 @@ async def delete_all_participants(code: int):
     if code == 3594:
         participants_t.truncate()
 
-@app.delete("/delete-all")
+@app.delete("/delete-all") # TODO add admin authentication
 async def delete_all_data(code: int):
     if code == 3594:
         participants_t.truncate()
