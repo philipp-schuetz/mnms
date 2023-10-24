@@ -62,6 +62,9 @@ class User(BaseModel):
 def group_exists(group_name: str):
     return groups_t.contains(Group_Q.name == group_name)
 
+def class_exists(class_name: str):
+    return classes_t.contains(Class_Q.name == class_name)
+
 def get_user(username: str):
     if username == 'admin':
         return {'username': 'admin', 'password': ADMIN_PASSWORD}
@@ -148,6 +151,11 @@ async def root():
 
 @app.get("/classes/info")
 async def get_class_info(current_user: Annotated[User, Depends(get_current_user)], class_name: str):
+    if not class_exists(class_name):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="class not found",
+        )
     return classes_t.get(Class_Q.name == class_name)
 
 @app.post("/classes/create")
@@ -299,6 +307,16 @@ async def create_participant(current_user: Annotated[User, Depends(get_current_u
             detail="admin privileges required",
         )
     else:
+        if not class_exists(class_name):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="class not found",
+            )
+        if not group_exists(group_name):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="group not found",
+            )
         participant_id = participants_t.insert({
             'firstname': firstname,
             'lastname': lastname,
