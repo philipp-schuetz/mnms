@@ -172,7 +172,7 @@ async def get_group_participants(current_user: Annotated[User, Depends(get_curre
             status_code=status.HTTP_404_NOT_FOUND,
             detail="group not found",
         )
-    if current_user['username'] != 'admin' or current_user['username'] != group:
+    if current_user['username'] != 'admin' and current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
@@ -193,7 +193,7 @@ async def get_group_stations(current_user: Annotated[User, Depends(get_current_u
             status_code=status.HTTP_404_NOT_FOUND,
             detail="group not found",
         )
-    if current_user['username'] != 'admin' or current_user['username'] != group:
+    if current_user['username'] != 'admin' and current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
@@ -217,7 +217,7 @@ async def get_group_scores(current_user: Annotated[User, Depends(get_current_use
             status_code=status.HTTP_404_NOT_FOUND,
             detail="group not found",
         )
-    if current_user['username'] != 'admin' or current_user['username'] != group:
+    if current_user['username'] != 'admin' and current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
@@ -250,7 +250,7 @@ async def set_group_scores(current_user: Annotated[User, Depends(get_current_use
             status_code=status.HTTP_404_NOT_FOUND,
             detail="group not found",
         )
-    if current_user['username'] != 'admin' or current_user['username'] != group:
+    if current_user['username'] != 'admin' and current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
