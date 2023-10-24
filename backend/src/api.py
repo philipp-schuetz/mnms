@@ -144,7 +144,7 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
 
 @app.get("/")
 async def root():
-    return
+    return {"message": "Visit /docs for the API documentation or go to https://github.com/philipp-schuetz/mnms for further information."}
 
 @app.get("/classes/info")
 async def get_class_info(current_user: Annotated[User, Depends(get_current_user)], class_name: str):
