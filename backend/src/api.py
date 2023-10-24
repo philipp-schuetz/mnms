@@ -14,7 +14,7 @@ from tinydb.middlewares import CachingMiddleware
 from pydantic import BaseModel
 
 
-SECRET_KEY = "3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731"
+SECRET_KEY = "3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731" # TODO put into env variable
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -58,6 +58,9 @@ class TokenData(BaseModel):
 
 class User(BaseModel):
     username: str
+
+def group_exists(group_name: str):
+    return groups_t.contains(Group_Q.name == group_name)
 
 def get_user(username: str):
     if username == 'admin':
@@ -164,6 +167,11 @@ async def create_class(current_user: Annotated[User, Depends(get_current_user)],
 
 @app.get("/groups/{group}/participants")
 async def get_group_participants(current_user: Annotated[User, Depends(get_current_user)], group: str):
+    if not group_exists(group):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="group not found",
+        )
     if current_user['username'] != 'admin' or current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -180,6 +188,11 @@ async def get_group_participants(current_user: Annotated[User, Depends(get_curre
 
 @app.get("/groups/{group}/stations")
 async def get_group_stations(current_user: Annotated[User, Depends(get_current_user)], group: str):
+    if not group_exists(group):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="group not found",
+        )
     if current_user['username'] != 'admin' or current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -199,6 +212,11 @@ async def get_group_stations(current_user: Annotated[User, Depends(get_current_u
 
 @app.get("/groups/{group}/scores")
 async def get_group_scores(current_user: Annotated[User, Depends(get_current_user)], group: str):
+    if not group_exists(group):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="group not found",
+        )
     if current_user['username'] != 'admin' or current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -227,6 +245,11 @@ async def get_all_groups(current_user: Annotated[User, Depends(get_current_user)
 
 @app.put("/groups/{group}/scores")
 async def set_group_scores(current_user: Annotated[User, Depends(get_current_user)], group: str, fairness: int, score_list: List[int] = [0,0,0,0,0,0]):
+    if not group_exists(group):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="group not found",
+        )
     if current_user['username'] != 'admin' or current_user['username'] != group:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
