@@ -301,7 +301,10 @@ async def create_group(current_user: Annotated[User, Depends(get_current_user)],
             detail="admin privileges required",
         )
     if len(stations) != 8:
-        return {"error": "stations should be a list with lenght 8"}
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="stations should be a list with length 8"
+        )
     group_id = groups_t.insert({
         'name': name,
         'fairness_score': 0,
