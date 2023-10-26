@@ -68,6 +68,13 @@ def group_exists(group_name: str):
 def class_exists(class_name: str):
     return classes_t.contains(Class_Q.name == class_name)
 
+def validate_scores(group_scores: List[int], fairness_score: int):
+    for score in group_scores:
+        if score < 0 or score > 5:
+            return False
+    if fairness_score < 0 or fairness_score > 3:
+        return False
+
 def get_user(username: str):
     if username == 'admin':
         return {'username': 'admin', 'password': ADMIN_PASSWORD}
@@ -264,6 +271,11 @@ async def set_group_scores(current_user: Annotated[User, Depends(get_current_use
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
+        )
+    if not validate_scores(score_list, fairness):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="station scores must be between 0 and 5, fairness score must be between 0 and 3",
         )
     ids_fairness = groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
     ids_scores = groups_t.update({'station_scores': score_list}, Group_Q.name == group)
