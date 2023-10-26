@@ -374,7 +374,7 @@ async def create_station(current_user: Annotated[User, Depends(get_current_user)
         return {"ID": station_id}
 
 @app.delete("participants/delete-all")
-async def delete_all_participants(current_user: Annotated[User, Depends(get_current_user)]):
+async def delete_all_participants(current_user: Annotated[User, Depends(get_current_user)]): # TODO throws CORS error, cannot be fetched
     if current_user['username'] != 'admin':
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -382,6 +382,7 @@ async def delete_all_participants(current_user: Annotated[User, Depends(get_curr
         )
     else:
         participants_t.truncate()
+        return {"message": "deleted all participants"}
 
 @app.delete("/delete-all")
 async def delete_all_data(current_user: Annotated[User, Depends(get_current_user)]):
@@ -396,3 +397,4 @@ async def delete_all_data(current_user: Annotated[User, Depends(get_current_user
         groups_t.truncate()
         stations_t.truncate()
         users_t.truncate()
+        return {"message": "deleted all data"}
