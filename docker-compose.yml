@@ -9,6 +9,7 @@ services:
       dockerfile: DockerfileBackend
     environment:
       - ADMIN_PASSWORD=1234
+      - AUTH_SECRET_KEY=3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731
     ports:
       - 8000:80
     volumes:

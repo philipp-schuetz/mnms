@@ -14,7 +14,7 @@ from tinydb.middlewares import CachingMiddleware
 from pydantic import BaseModel
 
 
-SECRET_KEY = "3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731" # TODO put into env variable
+SECRET_KEY = os.environ.get('AUTH_SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
