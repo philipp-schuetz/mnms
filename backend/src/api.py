@@ -270,9 +270,14 @@ async def set_group_scores(current_user: Annotated[User, Depends(get_current_use
             detail="admin privileges required or logged in with wrong group",
         )
     else:
-        groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
-        groups_t.update({'station_scores': score_list}, Group_Q.name == group)
-        return
+        ids_fairness = groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
+        ids_scores = groups_t.update({'station_scores': score_list}, Group_Q.name == group)
+        return {
+            "message": [
+                f"updated fairness score: {ids_fairness}"
+                f"updated station scores: {ids_scores}"
+            ]
+        }
 
 @app.post("/groups/create")
 async def create_group(current_user: Annotated[User, Depends(get_current_user)], name:str, stations:List[str]):
