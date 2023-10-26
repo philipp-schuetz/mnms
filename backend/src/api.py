@@ -156,7 +156,13 @@ async def get_class_info(current_user: Annotated[User, Depends(get_current_user)
             status_code=status.HTTP_404_NOT_FOUND,
             detail="class not found",
         )
-    return classes_t.get(Class_Q.name == class_name)
+    if current_user['username'] != 'admin' and re.sub(r'-\d$', '', current_user['username']) != class_name: # remove group number to convert username to classname
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="admin privileges required or logged in with wrong group",
+        )
+    else:
+        return classes_t.get(Class_Q.name == class_name)
 
 @app.post("/classes/create")
 async def create_class(current_user: Annotated[User, Depends(get_current_user)], name: str, room: str, teacher: str):
