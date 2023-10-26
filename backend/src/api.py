@@ -1,4 +1,5 @@
 import os
+import re
 from typing import List, Annotated
 from datetime import datetime, timedelta
 
@@ -132,20 +133,19 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        classes = []
-        for class_ in classes_t.all():
-            classes.append(class_['name'])
+    classes = []
+    for class_ in classes_t.all():
+        classes.append(class_['name'])
 
-        if username not in classes:
-            raise HTTPException(status_code=400, detail="username must match any class or group name")
+    if username not in classes:
+        raise HTTPException(status_code=400, detail="username must match any class or group name")
 
-        users_t.insert({
-            'username': username,
-            'password': password
-        })
+    users_t.insert({
+        'username': username,
+        'password': password
+    })
 
-        return {"message": f"user {username} created"}
+    return {"message": f"user {username} created"}
 
 @app.get("/")
 async def root():
@@ -163,8 +163,7 @@ async def get_class_info(current_user: Annotated[User, Depends(get_current_user)
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
         )
-    else:
-        return classes_t.get(Class_Q.name == class_name)
+    return classes_t.get(Class_Q.name == class_name)
 
 @app.post("/classes/create")
 async def create_class(current_user: Annotated[User, Depends(get_current_user)], name: str, room: str, teacher: str):
@@ -173,13 +172,12 @@ async def create_class(current_user: Annotated[User, Depends(get_current_user)],
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        class_id = classes_t.insert({
-            'name': name,
-            'room': room,
-            'teacher': teacher
-        })
-        return {"ID": class_id}
+    class_id = classes_t.insert({
+        'name': name,
+        'room': room,
+        'teacher': teacher
+    })
+    return {"ID": class_id}
 
 @app.get("/groups/{group}/participants")
 async def get_group_participants(current_user: Annotated[User, Depends(get_current_user)], group: str):
@@ -193,14 +191,13 @@ async def get_group_participants(current_user: Annotated[User, Depends(get_curre
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
         )
-    else:
-        group_participants = participants_t.search(Participant_Q.group == group)
-        output = []
-        for participant in group_participants:
-            participant_with_id = {"id": participant.doc_id}
-            participant_with_id.update(participant)
-            output.append(participant_with_id)
-        return output
+    group_participants = participants_t.search(Participant_Q.group == group)
+    output = []
+    for participant in group_participants:
+        participant_with_id = {"id": participant.doc_id}
+        participant_with_id.update(participant)
+        output.append(participant_with_id)
+    return output
 
 @app.get("/groups/{group}/stations")
 async def get_group_stations(current_user: Annotated[User, Depends(get_current_user)], group: str):
@@ -214,17 +211,16 @@ async def get_group_stations(current_user: Annotated[User, Depends(get_current_u
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
         )
-    else:
-        stations_res = groups_t.get(Group_Q.name == group)['stations']
-        output = {'stations': []}
-        for station in stations_res:
-            station_info = stations_t.get(Station_Q.name == station)
-            output['stations'].append({
-                'name': station_info['name'],
-                'subject': station_info['subject'],
-                'room': station_info['room']
-            })
-        return output
+    stations_res = groups_t.get(Group_Q.name == group)['stations']
+    output = {'stations': []}
+    for station in stations_res:
+        station_info = stations_t.get(Station_Q.name == station)
+        output['stations'].append({
+            'name': station_info['name'],
+            'subject': station_info['subject'],
+            'room': station_info['room']
+        })
+    return output
 
 @app.get("/groups/{group}/scores")
 async def get_group_scores(current_user: Annotated[User, Depends(get_current_user)], group: str):
@@ -238,12 +234,11 @@ async def get_group_scores(current_user: Annotated[User, Depends(get_current_use
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
         )
-    else:
-        result = groups_t.get(Group_Q.name == group)
-        return {
-            "fairness_score": result["fairness_score"],
-            "station_scores": result["station_scores"]
-        }
+    result = groups_t.get(Group_Q.name == group)
+    return {
+        "fairness_score": result["fairness_score"],
+        "station_scores": result["station_scores"]
+    }
 
 @app.get("/groups/get-all")
 async def get_all_groups(current_user: Annotated[User, Depends(get_current_user)]):
@@ -252,12 +247,11 @@ async def get_all_groups(current_user: Annotated[User, Depends(get_current_user)
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        all_groups = groups_t.all()
-        out = []
-        for group in all_groups:
-            out.append(group['name'])
-        return out
+    all_groups = groups_t.all()
+    out = []
+    for group in all_groups:
+        out.append(group['name'])
+    return out
 
 @app.put("/groups/{group}/scores")
 async def set_group_scores(current_user: Annotated[User, Depends(get_current_user)], group: str, fairness: int, score_list: List[int] = [0,0,0,0,0,0]):
@@ -271,15 +265,14 @@ async def set_group_scores(current_user: Annotated[User, Depends(get_current_use
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
         )
-    else:
-        ids_fairness = groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
-        ids_scores = groups_t.update({'station_scores': score_list}, Group_Q.name == group)
-        return {
-            "message": [
-                f"updated fairness score: {ids_fairness}"
-                f"updated station scores: {ids_scores}"
-            ]
-        }
+    ids_fairness = groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
+    ids_scores = groups_t.update({'station_scores': score_list}, Group_Q.name == group)
+    return {
+        "message": [
+            f"updated fairness score: {ids_fairness}"
+            f"updated station scores: {ids_scores}"
+        ]
+    }
 
 @app.post("/groups/create")
 async def create_group(current_user: Annotated[User, Depends(get_current_user)], name:str, stations:List[str]):
@@ -288,16 +281,15 @@ async def create_group(current_user: Annotated[User, Depends(get_current_user)],
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        if len(stations) != 8:
-            return {"error": "stations should be a list with lenght 8"}
-        group_id = groups_t.insert({
-            'name': name,
-            'fairness_score': 0,
-            'station_scores': [0, 0, 0, 0, 0, 0],
-            'stations': stations
-        })
-        return {"ID": group_id}
+    if len(stations) != 8:
+        return {"error": "stations should be a list with lenght 8"}
+    group_id = groups_t.insert({
+        'name': name,
+        'fairness_score': 0,
+        'station_scores': [0, 0, 0, 0, 0, 0],
+        'stations': stations
+    })
+    return {"ID": group_id}
 
 @app.get("/participants/get-all")
 async def get_all_participants(current_user: Annotated[User, Depends(get_current_user)]):
@@ -306,8 +298,7 @@ async def get_all_participants(current_user: Annotated[User, Depends(get_current
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        return participants_t.all()
+    return participants_t.all()
 
 @app.post("/participants/create")
 async def create_participant(current_user: Annotated[User, Depends(get_current_user)],
@@ -319,25 +310,24 @@ async def create_participant(current_user: Annotated[User, Depends(get_current_u
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        if not class_exists(class_name):
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="class not found",
-            )
-        if not group_exists(group_name):
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="group not found",
-            )
-        participant_id = participants_t.insert({
-            'firstname': firstname,
-            'lastname': lastname,
-            'class': class_name,
-            'group': group_name,
-            'present': present
-        })
-        return {"ID": participant_id}
+    if not class_exists(class_name):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="class not found",
+        )
+    if not group_exists(group_name):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="group not found",
+        )
+    participant_id = participants_t.insert({
+        'firstname': firstname,
+        'lastname': lastname,
+        'class': class_name,
+        'group': group_name,
+        'present': present
+    })
+    return {"ID": participant_id}
 
 @app.put("/participants/set-present")
 async def set_participant_present(current_user: Annotated[User, Depends(get_current_user)], participant_id: int, present: bool):
@@ -346,9 +336,8 @@ async def set_participant_present(current_user: Annotated[User, Depends(get_curr
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
         )
-    else:
-        ids_updated = participants_t.update({'present': present}, doc_ids=[participant_id])
-        return {"message": f"updated presence of participant {ids_updated}"}
+    ids_updated = participants_t.update({'present': present}, doc_ids=[participant_id])
+    return {"message": f"updated presence of participant {ids_updated}"}
 
 @app.get("/stations/get-all")
 async def get_all_stations(current_user: Annotated[User, Depends(get_current_user)]):
@@ -357,8 +346,7 @@ async def get_all_stations(current_user: Annotated[User, Depends(get_current_use
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        return stations_t.all()
+    return stations_t.all()
 
 @app.post("/stations/create")
 async def create_station(current_user: Annotated[User, Depends(get_current_user)], name: str, subject: str, room: str):
@@ -367,13 +355,12 @@ async def create_station(current_user: Annotated[User, Depends(get_current_user)
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        station_id = stations_t.insert({
-            'name': name,
-            'subject': subject,
-            'room': room
-        })
-        return {"ID": station_id}
+    station_id = stations_t.insert({
+        'name': name,
+        'subject': subject,
+        'room': room
+    })
+    return {"ID": station_id}
 
 @app.delete("participants/delete-all")
 async def delete_all_participants(current_user: Annotated[User, Depends(get_current_user)]): # TODO throws CORS error, cannot be fetched
@@ -382,9 +369,8 @@ async def delete_all_participants(current_user: Annotated[User, Depends(get_curr
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        participants_t.truncate()
-        return {"message": "deleted all participants"}
+    participants_t.truncate()
+    return {"message": "deleted all participants"}
 
 @app.delete("/delete-all")
 async def delete_all_data(current_user: Annotated[User, Depends(get_current_user)]):
@@ -393,10 +379,9 @@ async def delete_all_data(current_user: Annotated[User, Depends(get_current_user
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    else:
-        participants_t.truncate()
-        classes_t.truncate()
-        groups_t.truncate()
-        stations_t.truncate()
-        users_t.truncate()
-        return {"message": "deleted all data"}
+    participants_t.truncate()
+    classes_t.truncate()
+    groups_t.truncate()
+    stations_t.truncate()
+    users_t.truncate()
+    return {"message": "deleted all data"}
