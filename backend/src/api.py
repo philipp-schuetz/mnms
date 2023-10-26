@@ -339,7 +339,14 @@ async def create_participant(current_user: Annotated[User, Depends(get_current_u
 
 @app.put("/participants/set-present")
 async def set_participant_present(current_user: Annotated[User, Depends(get_current_user)], participant_id: int, present: bool):
-    participants_t.update({'present': present}, doc_ids=[participant_id])
+    if current_user['username'] != 'admin' and current_user['username'] != participants_t.get(doc_id=participant_id)['group']:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="admin privileges required or logged in with wrong group",
+        )
+    else:
+        ids_updated = participants_t.update({'present': present}, doc_ids=[participant_id])
+        return {"message": f"updated presence of participant {ids_updated}"}
 
 @app.get("/stations/get-all")
 async def get_all_stations(current_user: Annotated[User, Depends(get_current_user)]):
