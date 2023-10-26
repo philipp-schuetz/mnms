@@ -12,7 +12,7 @@ from tinydb import TinyDB, Query
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 SECRET_KEY = os.environ.get('AUTH_SECRET_KEY')
@@ -261,7 +261,12 @@ async def get_all_groups(current_user: Annotated[User, Depends(get_current_user)
     return out
 
 @app.put("/groups/{group}/scores")
-async def set_group_scores(current_user: Annotated[User, Depends(get_current_user)], group: str, fairness: int, score_list: List[int] = [0,0,0,0,0,0]):
+async def set_group_scores(
+    current_user: Annotated[User, Depends(get_current_user)],
+    group: str,
+    fairness: int,
+    score_list: Field([0, 0, 0, 0, 0, 0], description="List of station scores")
+    ):
     if not group_exists(group):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
