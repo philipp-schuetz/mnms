@@ -5,6 +5,7 @@
   - PUBLIC_API_PATH: public api url
   - ADMIN_PASSWORD: set password for account `admin`
   - AUTH_SECRET_KEY: generate new key with `openssl rand -hex 32`
+  - CACHING_ENABLED: enable(1) or disable(0) database caching, improves performance
 - notice: password hashing is not enabled for this project
 - build and start the containers with `docker compose up --build`
 - add your data data directly through the api or use `setup.py`
