@@ -69,6 +69,8 @@ def class_exists(class_name: str):
     return classes_t.contains(Class_Q.name == class_name)
 
 def validate_scores(group_scores: List[int], fairness_score: int):
+    if len(group_scores) != 6:
+        return False
     for score in group_scores:
         if score < 0 or score > 5:
             return False
@@ -280,7 +282,7 @@ async def set_group_scores(
     if not validate_scores(score_list, fairness):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="station scores must be between 0 and 5, fairness score must be between 0 and 3",
+            detail="station scores must be between 0 and 5, fairness score must be between 0 and 3, station scores should be a list with length 6",
         )
     ids_fairness = groups_t.update({'fairness_score': fairness}, Group_Q.name == group)
     ids_scores = groups_t.update({'station_scores': score_list}, Group_Q.name == group)
