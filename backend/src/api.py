@@ -34,8 +34,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# db = TinyDB('/db/db.json', storage=CachingMiddleware(JSONStorage))
-db = TinyDB('/db/db.json')
+if os.environ.get('CACHING_ENABLED') == '1':
+    db = TinyDB('/db/db.json', storage=CachingMiddleware(JSONStorage))
+else:
+    db = TinyDB('/db/db.json')
 
 participants_t = db.table('participants')
 classes_t = db.table('classes')
