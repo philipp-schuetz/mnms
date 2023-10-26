@@ -133,12 +133,12 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
-    classes = []
-    for class_ in classes_t.all():
-        classes.append(class_['name'])
+    groups = []
+    for group in groups_t.all():
+        groups.append(group['name'])
 
-    if username not in classes:
-        raise HTTPException(status_code=400, detail="username must match any class or group name")
+    if username not in groups:
+        raise HTTPException(status_code=400, detail="username must match group name")
 
     users_t.insert({
         'username': username,
