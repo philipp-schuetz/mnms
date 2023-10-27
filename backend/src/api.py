@@ -82,6 +82,7 @@ def validate_scores(group_scores: List[int], fairness_score: int):
             return False
     if fairness_score < 0 or fairness_score > 3:
         return False
+    return True
 
 def get_user(username: str):
     if username == 'admin':
