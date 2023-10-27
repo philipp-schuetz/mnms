@@ -310,6 +310,21 @@ async def create_group(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required",
         )
+    if not re.match(r'.+-\d$', name):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="group name must match the pattern .+-\d$",
+        )
+    if not class_exists(group_name_to_class_name(name)):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="class not found, create class first",
+        )
+    if group_exists(name):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="group already exists",
+        )
     if len(stations) != 8:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
