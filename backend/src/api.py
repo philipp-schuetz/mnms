@@ -62,6 +62,9 @@ class TokenData(BaseModel):
 class User(BaseModel):
     username: str
 
+def group_name_to_class_name(group_name: str):
+    return re.sub(r'-\d$', '', group_name)
+
 def group_exists(group_name: str):
     return groups_t.contains(Group_Q.name == group_name)
 
@@ -167,7 +170,7 @@ async def get_class_info(current_user: Annotated[User, Depends(get_current_user)
             status_code=status.HTTP_404_NOT_FOUND,
             detail="class not found",
         )
-    if current_user['username'] != 'admin' and re.sub(r'-\d$', '', current_user['username']) != class_name: # remove group number to convert username to classname
+    if current_user['username'] != 'admin' and group_name_to_class_name(current_user['username']) != class_name: # remove group number to convert username to classname
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
