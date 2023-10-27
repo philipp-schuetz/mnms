@@ -3,7 +3,7 @@ import re
 from typing import List, Annotated
 from datetime import datetime, timedelta
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
@@ -12,7 +12,7 @@ from tinydb import TinyDB, Query
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import CachingMiddleware
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 SECRET_KEY = os.environ.get('AUTH_SECRET_KEY')
@@ -270,7 +270,7 @@ async def set_group_scores(
     current_user: Annotated[User, Depends(get_current_user)],
     group: str,
     fairness: int,
-    score_list: Field([0, 0, 0, 0, 0, 0], description="List of station scores")
+    score_list: List[int] = Body([0, 0, 0, 0, 0, 0], description="List of station scores")
     ):
     if not group_exists(group):
         raise HTTPException(
