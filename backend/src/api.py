@@ -71,6 +71,9 @@ def group_exists(group_name: str):
 def class_exists(class_name: str):
     return classes_t.contains(Class_Q.name == class_name)
 
+def participant_exists(participant_id: int):
+    return participants_t.contains(doc_id=participant_id)
+
 def validate_scores(group_scores: List[int], fairness_score: int):
     if len(group_scores) != 6:
         return False
@@ -365,6 +368,11 @@ async def set_participant_present(current_user: Annotated[User, Depends(get_curr
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="admin privileges required or logged in with wrong group",
+        )
+    if not participant_exists(participant_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="participant not found",
         )
     ids_updated = participants_t.update({'present': present}, doc_ids=[participant_id])
     return {"message": f"updated presence of participant {ids_updated}"}
