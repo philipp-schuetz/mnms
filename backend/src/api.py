@@ -345,6 +345,11 @@ async def create_participant(current_user: Annotated[User, Depends(get_current_u
             status_code=status.HTTP_404_NOT_FOUND,
             detail="group not found",
         )
+    if group_name_to_class_name(group_name) != class_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="group name must match class name",
+        )
     participant_id = participants_t.insert({
         'firstname': firstname,
         'lastname': lastname,
