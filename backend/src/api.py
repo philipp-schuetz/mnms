@@ -74,6 +74,9 @@ def class_exists(class_name: str):
 def participant_exists(participant_id: int):
     return participants_t.contains(doc_id=participant_id)
 
+def user_exists(username: str):
+    return users_t.contains(User_Q.username == username)
+
 def validate_scores(group_scores: List[int], fairness_score: int):
     if len(group_scores) != 6:
         return False
@@ -155,6 +158,8 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
 
     if username not in groups:
         raise HTTPException(status_code=400, detail="username must match group name")
+    if user_exists(username):
+        raise HTTPException(status_code=400, detail="user already exists")
 
     users_t.insert({
         'username': username,
