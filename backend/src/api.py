@@ -301,7 +301,10 @@ async def set_group_scores(
     }
 
 @app.post("/groups/create")
-async def create_group(current_user: Annotated[User, Depends(get_current_user)], name:str, stations:List[str]):
+async def create_group(
+    current_user: Annotated[User, Depends(get_current_user)],
+    name:str,
+    stations: List[str] = Body(["station-1", "station-2", "station-3", "station-4", "station-5", "station-6", "station-7", "station-8"])):
     if current_user['username'] != 'admin':
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
