@@ -262,12 +262,7 @@ async def get_group_scores(current_user: Annotated[User, Depends(get_current_use
     }
 
 @app.get("/groups/get-all")
-async def get_all_groups(current_user: Annotated[User, Depends(get_current_user)]):
-    if current_user['username'] != 'admin':
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="admin privileges required",
-        )
+async def get_all_groups():
     all_groups = groups_t.all()
     out = []
     for group in all_groups:
