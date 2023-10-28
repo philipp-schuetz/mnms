@@ -1,14 +1,15 @@
 # mnms - Mint Nacht Management System
 ## setup
-- clone this repository with `git clone -b stable https://github.com/philipp-schuetz/mnms`
+- clone this repository with `git clone https://github.com/philipp-schuetz/mnms`
 - set environment variables in `docker-compose.yml`
-  - PUBLIC_API_PATH: public api url
+  - PUBLIC_API_PATH: public API URL
   - ADMIN_PASSWORD: set password for account `admin`
-  - AUTH_SECRET_KEY: generate new key with `openssl rand -hex 32`
-  - CACHING_ENABLED: enable(1) or disable(0) database caching, improves performance
-- notice: password hashing is not enabled for this project
+  - AUTH_SECRET_KEY: generate a new key with `openssl rand -hex 32`
+  - CACHING_ENABLED: enable (1) or disable (0) database caching, improves performance
+- notice: Password hashing is not enabled for this project.
 - build and start the containers with `docker compose up --build`
-- add your data data directly through the api or use `setup.py`
+- add your data directly through the API or use `setup.py`
+  - if you use `setup.py` set the API URL and admin password at the top of the file
 - minimum amount of data required:
   - 8 stations
   - 1 class
