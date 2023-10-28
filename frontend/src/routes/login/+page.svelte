@@ -1,5 +1,19 @@
 <script>
-	import { login } from '../../api.js';
+	import { env } from '$env/dynamic/public';
+	import { authToken } from '../../stores.js';
+
+	async function login(username, password) {
+		const response = await fetch(`${env.PUBLIC_API_PATH}/token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: `grant_type=&username=${username}&password=${password}&scope=&client_id=&client_secret=`,
+		});
+		const data = await response.json();
+		authToken.set(data['access_token']);
+		return response.status;
+	}
 
 	let username = '';
 	let password = '';
@@ -7,8 +21,8 @@
 </script>
 
 <form
-	on:submit={() => {
-		const result = login(username, password);
+	on:submit={async () => {
+		const result = await login(username, password);
 		if (result === 200) {
 			message = 'Login successful';
 		} else if (result === 401) {

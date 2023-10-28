@@ -1,10 +1,16 @@
 <script>
 	import { onMount } from 'svelte';
-	import { fetchData } from '../api.js';
+	import { env } from '$env/dynamic/public';
 
 	let groups = [];
 	onMount(async () => {
-		groups = await fetchData(`/groups/get-all`);
+		const response = await fetch(`${env.PUBLIC_API_PATH}/groups/get-all`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		groups = await response.json();
 	});
 </script>
 

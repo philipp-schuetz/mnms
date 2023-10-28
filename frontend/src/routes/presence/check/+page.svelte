@@ -1,26 +1,6 @@
 <script>
-	import { onMount } from 'svelte';
-	import { fetchData } from '../../../api.js';
-
-	let participantsData = [];
+	export let data;
 	let not_present_switch = false;
-
-	onMount(async () => {
-		participantsData = await fetchData(`/participants/get-all`);
-		participantsData = sortByGroup(participantsData);
-	});
-
-	function sortByGroup(persons) {
-		return persons.sort((a, b) => {
-			if (a.group < b.group) {
-				return -1;
-			}
-			if (a.group > b.group) {
-				return 1;
-			}
-			return 0;
-		});
-	}
 </script>
 
 <div class="container">
@@ -50,7 +30,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each participantsData as participant}
+					{#each data.participantsData as participant}
 						{#if not_present_switch}
 							{#if !participant.present}
 								<tr>
