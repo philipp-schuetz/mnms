@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 
 	import { env } from '$env/dynamic/public';
+	import { authToken } from '../../../stores.js';
 
 	let mounted = false;
 	let isConnected = false;
@@ -69,12 +70,17 @@
 	}
 
 	async function putScores(stationScores, fairnessScore) {
+		let token;
+		authToken.subscribe((value) => {
+			token = value;
+		});
 		const url = `${env.PUBLIC_API_PATH}/groups/${groupName}/scores?fairness=${fairnessScore}`;
 		const requestOptions = {
 			method: 'PUT',
 			body: JSON.stringify(stationScores),
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
 			},
 		};
 		try {
