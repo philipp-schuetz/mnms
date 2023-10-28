@@ -11,12 +11,11 @@ services:
       - ADMIN_PASSWORD=1234
       - AUTH_SECRET_KEY=3487783de8057b7527d133644e25ec84419179ab5a8287215d04d894bbb1e731
       - CACHING_ENABLED=0
+      - TZ=Europe/Berlin
     ports:
       - 8000:80
     volumes:
       - ./backend/db:/db
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
 
   mnms-frontend:
@@ -27,11 +26,9 @@ services:
       dockerfile: DockerfileFrontend
     environment:
       - PUBLIC_API_PATH=http://your-api-ip:8000
+      - TZ=Europe/Berlin
     ports:
       - 80:3000
     extra_hosts:
     - "host.docker.internal:host-gateway"
-    volumes:
-    - /etc/timezone:/etc/timezone:ro
-    - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
