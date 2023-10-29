@@ -168,6 +168,14 @@ async def create_user(current_user: Annotated[User, Depends(get_current_user)], 
 
     return {"message": f"user {username} created"}
 
+@app.get("/users/current")
+async def get_current_user(
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    return {
+        "username": current_user['username']
+    }
+
 @app.get("/")
 async def root():
     return {"message": "Visit /docs for the API documentation or go to https://github.com/philipp-schuetz/mnms for further information."}
