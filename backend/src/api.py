@@ -429,6 +429,16 @@ async def delete_all_participants(current_user: Annotated[User, Depends(get_curr
     participants_t.truncate()
     return {"message": "deleted all participants"}
 
+@app.delete("/users/delete-all")
+async def delete_all_users(current_user: Annotated[User, Depends(get_current_user)]):
+    if current_user['username'] != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="admin privileges required",
+        )
+    users_t.truncate()
+    return {"message": "deleted all users"}
+
 @app.delete("/delete-all")
 async def delete_all_data(current_user: Annotated[User, Depends(get_current_user)]):
     if current_user['username'] != 'admin':
