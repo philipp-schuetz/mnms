@@ -21,3 +21,10 @@
 - [Frontend](https://mnms.philippschuetz.com)
 - [Backend](https://mnms-api.philippschuetz.com)
 - [Backend Docs](https://mnms-api.philippschuetz.com/docs)
+
+### demo logins
+- admin: 1234
+- 7midi-1: 3277
+- 7midi-2: 8436
+- 7wxyz-1: 2794
+- 7wxyz-2: 4358
