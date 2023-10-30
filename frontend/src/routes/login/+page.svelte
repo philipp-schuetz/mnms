@@ -15,6 +15,11 @@
 		return response.status;
 	}
 
+	function logout() {
+		window.localStorage.setItem('token', '');
+		usernameStore.set('');
+	}
+
 	let username = '';
 	let password = '';
 	let message = '';
@@ -49,7 +54,8 @@
 		bind:value={password}
 	/>
 
-	<button type="submit">Login</button>
+	<button type="submit">Abmelden</button>
 </form>
+<button on:click={logout}>Abmelden</button>
 
 <p>{message}</p>
