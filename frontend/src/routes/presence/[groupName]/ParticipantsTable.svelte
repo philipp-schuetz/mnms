@@ -3,7 +3,6 @@
 
 	import { env } from '$env/dynamic/public';
 	import { onMount } from 'svelte';
-	import { authToken } from '../../../stores.js';
 
 	let mounted = false;
 	let isConnected = false;
@@ -35,17 +34,13 @@
 	});
 
 	async function setPresence(participantId, present) {
-		let token;
-		authToken.subscribe((value) => {
-			token = value;
-		});
 		try {
 			const url = `/participants/set-present?participant_id=${participantId}&present=${present}`;
 			const requestOptions = {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${window.localStorage.getItem('token')}`,
 				},
 			};
 			await fetch(`${env.PUBLIC_API_PATH}${url}`, requestOptions);

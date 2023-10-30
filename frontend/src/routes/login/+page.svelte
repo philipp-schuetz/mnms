@@ -1,6 +1,5 @@
 <script>
 	import { env } from '$env/dynamic/public';
-	import { authToken } from '../../stores.js';
 
 	async function login(username, password) {
 		const response = await fetch(`${env.PUBLIC_API_PATH}/token`, {
@@ -11,7 +10,7 @@
 			body: `grant_type=&username=${username}&password=${password}&scope=&client_id=&client_secret=`,
 		});
 		const data = await response.json();
-		authToken.set(data['access_token']);
+		window.localStorage.setItem('token', data['access_token']);
 		return response.status;
 	}
 

@@ -1,19 +1,13 @@
 export const ssr = false;
 import { env } from '$env/dynamic/public';
-import { authToken } from '../../stores.js';
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ fetch, params }) {
-	let token;
-	authToken.subscribe((value) => {
-		token = value;
-	});
-
 	const response = await fetch(`${env.PUBLIC_API_PATH}/groups/get-all`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${token}`
+			'Authorization': `Bearer ${window.localStorage.getItem('token')}`
 		}
 	});
 
@@ -26,7 +20,7 @@ export async function load({ fetch, params }) {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${token}`
+				'Authorization': `Bearer ${window.localStorage.getItem('token')}`
 			}
 		});
 		if (!response.ok) {
