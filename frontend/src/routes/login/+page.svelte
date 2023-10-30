@@ -1,5 +1,6 @@
 <script>
 	import { env } from '$env/dynamic/public';
+	import { usernameStore } from '../../stores.js';
 
 	async function login(username, password) {
 		const response = await fetch(`${env.PUBLIC_API_PATH}/token`, {
@@ -23,7 +24,10 @@
 	on:submit={async () => {
 		const result = await login(username, password);
 		if (result === 200) {
+			usernameStore.set(username);
 			message = 'Login successful';
+			username = '';
+			password = '';
 		} else if (result === 401) {
 			message = 'Wrong username or password';
 		} else {

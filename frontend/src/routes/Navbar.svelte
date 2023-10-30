@@ -1,16 +1,32 @@
 <script>
 	import { onMount } from 'svelte';
 	import { env } from '$env/dynamic/public';
+	import { usernameStore } from '../stores.js';
 
 	let groups = [];
+	let username = '';
+	let loggedIn = false;
 	onMount(async () => {
-		const response = await fetch(`${env.PUBLIC_API_PATH}/groups/get-all`, {
+		const groupsData = await fetch(`${env.PUBLIC_API_PATH}/groups/get-all`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 		});
-		groups = await response.json();
+		groups = await groupsData.json();
+
+		const userData = await fetch(`${env.PUBLIC_API_PATH}/users/current`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+			},
+		});
+		if (userData.ok) {
+			loggedIn = true;
+			const tmp = await userData.json();
+			usernameStore.set(tmp['username']);
+		}
 	});
 </script>
 
@@ -96,8 +112,14 @@
 					<a
 						class="nav-link"
 						aria-current="page"
-						href="/login">Login</a
+						href="/login"
 					>
+						{#if $usernameStore != ''}
+							Angemeldet als {$usernameStore}
+						{:else}
+							Anmelden
+						{/if}
+					</a>
 				</li>
 			</ul>
 		</div>
