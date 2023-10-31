@@ -5,18 +5,16 @@ import sys
 
 ######## SETUP ########
 
-API_URL = 'http://localhost:8000'
-CREDENTIALS = {
-    "username": "admin",
-    "password": "1234"
-}
+API_URL = 'http://your-api-ip:8000'
+admin_password = "1234"
+
 
 #######################
 
 data = {
     "grant_type": "",
-    "username": CREDENTIALS['username'],
-    "password": CREDENTIALS['password'],
+    "username": "admin",
+    "password": admin_password,
     "scope": "",
     "client_id": "",
     "client_secret": ""
