@@ -1,20 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
-	import { fetchData } from '../../api.js';
-
-	let groups = [];
-	let group_scores = {};
-	let mounted = false;
-
-	onMount(async () => {
-		let group_scores_tmp;
-		groups = await fetchData(`/groups/get-all`);
-		for (let group of groups) {
-			group_scores_tmp = await fetchData(`/groups/${group}/scores`);
-			group_scores[group] = group_scores_tmp;
-		}
-		mounted = true;
-	});
+	export let data;
 
 	function sumScores(station_scores, fairness_score) {
 		let sum = 0;
@@ -47,23 +32,21 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#if mounted}
-						{#each groups as group}
-							<tr>
-								<th>{group}</th>
-								{#each group_scores[String(group)].station_scores as score}
-									<td>{score}</td>
-								{/each}
-								<td>{group_scores[String(group)].fairness_score}</td>
-								<th
-									>{sumScores(
-										group_scores[String(group)].station_scores,
-										group_scores[String(group)].fairness_score
-									)}</th
-								>
-							</tr>
-						{/each}
-					{/if}
+					{#each data.groups as group}
+						<tr>
+							<th>{group}</th>
+							{#each data.group_scores[String(group)].station_scores as score}
+								<td>{score}</td>
+							{/each}
+							<td>{data.group_scores[String(group)].fairness_score}</td>
+							<th
+								>{sumScores(
+									data.group_scores[String(group)].station_scores,
+									data.group_scores[String(group)].fairness_score
+								)}</th
+							>
+						</tr>
+					{/each}
 				</tbody>
 			</table>
 		</div>

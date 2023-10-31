@@ -2,15 +2,22 @@ export const ssr = false;
 import { env } from '$env/dynamic/public';
 import { redirect } from '@sveltejs/kit';
 
-export async function load({ fetch, params }) {
+function sortByGroup(persons) {
+    return persons.sort((a, b) => {
+        if (a.group < b.group) {
+            return -1;
+        }
+        if (a.group > b.group) {
+            return 1;
+        }
+        return 0;
+    });
+}
 
-    const groupName = params.groupName;
-    const className = groupName.replace(/-\d$/, '');
-    const groupNumber = groupName.replace(/^.*-/, '');
-
+export async function load({ fetch }) {
     let participantsData = [];
 
-    const response = await fetch(`${env.PUBLIC_API_PATH}/groups/${groupName}/participants`, {
+    const response = await fetch(`${env.PUBLIC_API_PATH}/participants/get-all`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -20,13 +27,10 @@ export async function load({ fetch, params }) {
     if (!response.ok) {
         throw redirect(307, '/login');
     }
-
     participantsData = await response.json();
+    participantsData = sortByGroup(participantsData);
 
     return {
-        participantsData: participantsData,
-        groupName: groupName,
-        className: className,
-        groupNumber: groupNumber,
+        participantsData: participantsData
     };
 }

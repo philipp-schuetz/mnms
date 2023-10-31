@@ -75,6 +75,7 @@
 			body: JSON.stringify(stationScores),
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: `Bearer ${window.localStorage.getItem('token')}`,
 			},
 		};
 		try {

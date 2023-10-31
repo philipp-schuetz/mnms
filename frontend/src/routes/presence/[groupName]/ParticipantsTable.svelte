@@ -36,7 +36,13 @@
 	async function setPresence(participantId, present) {
 		try {
 			const url = `/participants/set-present?participant_id=${participantId}&present=${present}`;
-			const requestOptions = { method: 'PUT' };
+			const requestOptions = {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+				},
+			};
 			await fetch(`${env.PUBLIC_API_PATH}${url}`, requestOptions);
 		} catch (error) {
 			console.error('Error updating presence:', error);
