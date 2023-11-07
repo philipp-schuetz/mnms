@@ -28,6 +28,12 @@
 			usernameStore.set(tmp['username']);
 		}
 	});
+
+	function logout() {
+		window.localStorage.setItem('token', '');
+		usernameStore.set('');
+		window.location = '/'; // TODO svelte way for redirecting?
+	}
 </script>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -108,18 +114,30 @@
 						</li>
 					</ul>
 				</li>
+
 				<li class="nav-item">
-					<a
-						class="nav-link"
-						aria-current="page"
-						href="/login"
-					>
-						{#if $usernameStore != ''}
-							Angemeldet als {$usernameStore}
-						{:else}
+					{#if $usernameStore != ''}
+						<a
+							class="nav-link"
+							aria-current="page"
+							href="/login"
+							on:click={logout}
+						>
+							{#if $usernameStore != ''}
+								Angemeldet als {$usernameStore} (Abmelden)
+							{:else}
+								Anmelden
+							{/if}
+						</a>
+					{:else}
+						<a
+							class="nav-link"
+							aria-current="page"
+							href="/login"
+						>
 							Anmelden
-						{/if}
-					</a>
+						</a>
+					{/if}
 				</li>
 			</ul>
 		</div>

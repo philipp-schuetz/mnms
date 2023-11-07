@@ -1,6 +1,7 @@
 <script>
 	import { env } from '$env/dynamic/public';
 	import { usernameStore } from '../../stores.js';
+	import { goto } from '$app/navigation';
 
 	async function login(username, password) {
 		const response = await fetch(`${env.PUBLIC_API_PATH}/token`, {
@@ -15,11 +16,6 @@
 		return response.status;
 	}
 
-	function logout() {
-		window.localStorage.setItem('token', '');
-		usernameStore.set('');
-	}
-
 	let username = '';
 	let password = '';
 	let message = '';
@@ -30,7 +26,7 @@
 		const result = await login(username, password);
 		if (result === 200) {
 			usernameStore.set(username);
-			message = 'Login successful';
+			goto('/');
 			username = '';
 			password = '';
 		} else if (result === 401) {
@@ -40,22 +36,21 @@
 		}
 	}}
 >
-	<label for="username">Username:</label>
+	<label for="username">Benutzername:</label>
 	<input
 		type="text"
 		id="username"
 		bind:value={username}
 	/>
 
-	<label for="password">Password:</label>
+	<label for="password">Passwort:</label>
 	<input
 		type="password"
 		id="password"
 		bind:value={password}
 	/>
 
-	<button type="submit">Abmelden</button>
+	<button type="submit">Anmelden</button>
 </form>
-<button on:click={logout}>Abmelden</button>
 
 <p>{message}</p>
